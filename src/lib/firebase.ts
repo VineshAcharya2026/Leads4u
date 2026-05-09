@@ -1,5 +1,5 @@
 import { initializeApp, type FirebaseOptions } from 'firebase/app';
-import { browserLocalPersistence, getAuth, initializeAuth } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import rawConfig from '../../firebase-applet-config.json';
 
@@ -11,16 +11,12 @@ type FirebaseAppletConfig = FirebaseOptions & {
 const firebaseConfig = rawConfig as FirebaseAppletConfig;
 const app = initializeApp(firebaseConfig);
 
-/** Single Auth instance with explicit local persistence (production web). */
-function getOrInitAuth() {
-  try {
-    return initializeAuth(app, { persistence: browserLocalPersistence });
-  } catch {
-    return getAuth(app);
-  }
-}
-
-export const auth = getOrInitAuth();
+/**
+ * Default browser Auth (via `getAuth`) wires `popupRedirectResolver` correctly.
+ * A custom `initializeAuth` without `popupRedirectResolver` breaks `signInWithPopup`
+ * with `auth/argument-error`.
+ */
+export const auth = getAuth(app);
 
 export const db = firebaseConfig.firestoreDatabaseId
   ? getFirestore(app, firebaseConfig.firestoreDatabaseId)

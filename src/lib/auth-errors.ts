@@ -33,6 +33,8 @@ export function firebaseAuthMessage(error: unknown): string {
       return 'Password is too weak. Use at least 6 characters.';
     case 'auth/invalid-email':
       return 'Enter a valid email address.';
+    case 'auth/argument-error':
+      return 'Google sign-in was misconfigured. Refresh the page and try again; if it persists, the app bundle may need updating.';
     case 'auth/network-request-failed':
       return 'Network error. Check your connection and try again.';
     case 'auth/too-many-requests':
