@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { 
-  createUserWithEmailAndPassword, 
+import {
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
+import { RedirectPendingError, signInWithGoogle } from '../lib/google-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,6 +23,7 @@ export function AuthPage() {
   const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login';
   
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -81,17 +81,22 @@ export function AuthPage() {
   };
 
   const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
     try {
-      const provider = new GoogleAuthProvider();
-      const { user } = await signInWithPopup(auth, provider);
-      
-      // Check if user exists in Firestore
-      // (Implementation missing for simplicity, but ideally you'd check and create if not exists)
-      
+      await signInWithGoogle(auth);
       toast.success('Signed in with Google');
       navigate('/');
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof RedirectPendingError) {
+        toast.info('Continuing with Google…', {
+          description: 'Complete sign-in in the redirect flow if your browser opened a new page.',
+        });
+        return;
+      }
+      const msg = error instanceof Error ? error.message : 'Google sign-in failed';
+      toast.error(msg);
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -138,11 +143,17 @@ export function AuthPage() {
                     <span className="bg-white px-2 text-slate-500">Or continue with</span>
                   </div>
                 </div>
-                <Button variant="outline" className="w-full h-11 rounded-xl border-slate-200 hover:bg-slate-50" onClick={handleGoogleSignIn}>
-                  <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                    <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-11 rounded-xl border-slate-200 hover:bg-slate-50 text-slate-900"
+                  onClick={handleGoogleSignIn}
+                  disabled={googleLoading || loading}
+                >
+                  <svg className="mr-2 h-4 w-4 shrink-0" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+                    <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
                   </svg>
-                  Google
+                  {googleLoading ? 'Connecting…' : 'Continue with Google'}
                 </Button>
               </CardContent>
             </Card>
@@ -235,9 +246,29 @@ export function AuthPage() {
                   </div>
                 )}
               </CardContent>
-              <CardFooter className="pt-6">
+              <CardFooter className="flex flex-col gap-4 pt-6">
                 <Button className="w-full bg-[#1a3c6e] hover:bg-[#152e55] h-11 rounded-xl text-lg font-semibold" onClick={(e) => handleAuth(e, 'register')} disabled={loading}>
                   {loading ? 'Creating account...' : 'Create Account'}
+                </Button>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-slate-200"></span>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-2 text-slate-600">Or continue with</span>
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-11 rounded-xl border-slate-200 hover:bg-slate-50 text-slate-900"
+                  onClick={handleGoogleSignIn}
+                  disabled={googleLoading || loading}
+                >
+                  <svg className="mr-2 h-4 w-4 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+                    <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+                  </svg>
+                  {googleLoading ? 'Connecting…' : 'Sign up with Google'}
                 </Button>
               </CardFooter>
             </Card>
