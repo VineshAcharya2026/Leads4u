@@ -3,6 +3,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 import { completeGoogleRedirectIfAny } from '../lib/google-auth';
+import { ensureCustomerUserDocument } from '../lib/user-firestore';
 import { UserProfile } from '../types';
 
 interface AuthContextType {
@@ -26,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         await completeGoogleRedirectIfAny(auth);
       } catch (err) {
-        console.error('[auth] Google redirect completion failed:', err);
+        if (import.meta.env.DEV) console.error('[auth] Google redirect completion failed:', err);
       }
 
       if (!active) return;
@@ -36,6 +37,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         setUser(firebaseUser);
         if (firebaseUser) {
+          try {
+            await ensureCustomerUserDocument(firebaseUser);
+          } catch (err) {
+            if (import.meta.env.DEV) console.error('[auth] Failed to ensure user document:', err);
+          }
+
           const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
           if (userDoc.exists()) {
             setProfile(userDoc.data() as UserProfile);
