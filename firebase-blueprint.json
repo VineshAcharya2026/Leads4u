@@ -1,0 +1,124 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and role information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "provider", "customer"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "phoneNumber": { "type": "string" },
+        "photoURL": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "ProviderProfile": {
+      "title": "Provider Profile",
+      "description": "Business details for service providers",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "businessName": { "type": "string" },
+        "description": { "type": "string" },
+        "categories": { "type": "array", "items": { "type": "string" } },
+        "city": { "type": "string" },
+        "pincode": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "isVerified": { "type": "boolean" },
+        "address": { "type": "string" }
+      },
+      "required": ["userId", "businessName", "categories", "city"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "A service request submitted by a customer",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "city": { "type": "string" },
+        "pincode": { "type": "string" },
+        "budget": { "type": "string" },
+        "urgency": { "type": "string", "enum": ["low", "medium", "high"] },
+        "status": { "type": "string", "enum": ["open", "assigned", "completed", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" }
+      },
+      "required": ["customerId", "category", "city", "status", "createdAt"]
+    },
+    "LeadAssignment": {
+      "title": "Lead Assignment",
+      "description": "Mapping a lead to a provider",
+      "type": "object",
+      "properties": {
+        "leadId": { "type": "string" },
+        "providerId": { "type": "string" },
+        "status": { "type": "string", "enum": ["new", "accepted", "contacted", "converted", "rejected"] },
+        "assignedAt": { "type": "string", "format": "date-time" },
+        "notes": { "type": "string" }
+      },
+      "required": ["leadId", "providerId", "status", "assignedAt"]
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "User subscription status and lead usage",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "planId": { "type": "string" },
+        "stripeSubscriptionId": { "type": "string" },
+        "status": { "type": "string" },
+        "currentPeriodEnd": { "type": "string", "format": "date-time" },
+        "leadsUsed": { "type": "number" },
+        "leadsLimit": { "type": "number" }
+      },
+      "required": ["userId", "planId", "status"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Provider review by a customer",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string" },
+        "providerId": { "type": "string" },
+        "leadId": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerId", "providerId", "leadId", "rating"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Users collection"
+    },
+    "/profiles/{userId}": {
+      "schema": "ProviderProfile",
+      "description": "Service provider business profiles"
+    },
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Service requests"
+    },
+    "/leads/{leadId}/assignments/{providerId}": {
+      "schema": "LeadAssignment",
+      "description": "Assignments of leads to providers"
+    },
+    "/subscriptions/{userId}": {
+      "schema": "Subscription",
+      "description": "User subscription data"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Reviews of providers"
+    }
+  }
+}

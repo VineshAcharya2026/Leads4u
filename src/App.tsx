@@ -1,0 +1,113 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { Toaster } from 'sonner';
+import { Layout } from './components/Layout';
+import { PostAuthRedirect } from './components/PostAuthRedirect';
+import { HomePage } from './pages/HomePage';
+import { AuthPage } from './pages/AuthPage';
+import { LeadSubmissionPage } from './pages/LeadSubmissionPage';
+import { CategoryPage } from './pages/CategoryPage';
+import { ProviderProfilePage } from './pages/ProviderProfilePage';
+import { SubServiceDetailPage } from './pages/SubServiceDetailPage';
+import { SettingsPage } from './pages/SettingsPage';
+
+// Dashboards
+import { AdminDashboard } from './pages/dashboard/AdminDashboard';
+import { ProviderDashboard } from './pages/dashboard/ProviderDashboard';
+import { ProviderCompanyProfilePage } from './pages/dashboard/ProviderCompanyProfilePage';
+import { CustomerDashboardLayout } from './pages/dashboard/CustomerDashboardLayout';
+import { CustomerRequestsPage } from './pages/dashboard/CustomerRequestsPage';
+import { CustomerProfilePage } from './pages/dashboard/CustomerProfilePage';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import type { UserRole } from './types';
+
+function ProtectedRoute({
+  children,
+  requiredRole,
+}: {
+  children: React.ReactNode;
+  requiredRole?: UserRole;
+}) {
+  const { user, profile, loading } = useAuth();
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (!user) return <Navigate to="/auth" />;
+  if (requiredRole && profile?.role !== requiredRole) return <Navigate to="/" />;
+
+  return <>{children}</>;
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <TooltipProvider>
+        <BrowserRouter>
+          <PostAuthRedirect />
+          <Layout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/submit-lead" element={<LeadSubmissionPage />} />
+              <Route path="/services/:category" element={<CategoryPage />} />
+              <Route path="/services/:category/:subservice" element={<SubServiceDetailPage />} />
+              <Route path="/providers/:id" element={<ProviderProfilePage />} />
+
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <SettingsPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/admin/*"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/provider"
+                element={
+                  <ProtectedRoute requiredRole="provider">
+                    <ProviderDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/provider/profile"
+                element={
+                  <ProtectedRoute requiredRole="provider">
+                    <ProviderCompanyProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute requiredRole="customer">
+                    <CustomerDashboardLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<CustomerRequestsPage />} />
+                <Route path="profile" element={<CustomerProfilePage />} />
+              </Route>
+            </Routes>
+          </Layout>
+          <Toaster position="top-right" />
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
+  );
+}

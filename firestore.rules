@@ -1,0 +1,132 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // -------------------------------------------------------------------------
+    // 0. Global Catch-All Deny
+    // -------------------------------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Global Helpers
+    // -------------------------------------------------------------------------
+    function isSignedIn() { return request.auth != null; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    /** Provider has an assignment row for this lead (doc id = leadId_uid). */
+    function providerHasAssignmentForLead(leadId) {
+      return exists(/databases/$(database)/documents/leadsAssignments/$(leadId + '_' + request.auth.uid));
+    }
+
+    // -------------------------------------------------------------------------
+    // 1. Users Collection
+    // -------------------------------------------------------------------------
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && request.auth.uid == userId &&
+                      incoming().role in ['customer', 'provider'] &&
+                      incoming().uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin()) &&
+                      (isAdmin() || incoming().diff(existing()).affectedKeys()
+                        .hasOnly(['displayName', 'photoURL', 'phoneNumber', 'customerAccountType', 'companyName', 'needsProfileSetup']));
+    }
+
+    // -------------------------------------------------------------------------
+    // 2. Provider Profiles
+    // -------------------------------------------------------------------------
+    match /profiles/{userId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. Lead assignments (top-level; app uses leadsAssignments/{leadId}_{providerId})
+    // -------------------------------------------------------------------------
+    match /leadsAssignments/{assignmentId} {
+      allow read: if isSignedIn() && (
+        isAdmin() ||
+        resource.data.providerId == request.auth.uid
+      );
+      allow create: if isSignedIn() &&
+        incoming().providerId == request.auth.uid &&
+        incoming().leadId is string;
+      allow update, delete: if isSignedIn() && (
+        isAdmin() ||
+        resource.data.providerId == request.auth.uid
+      );
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. Leads Collection
+    // -------------------------------------------------------------------------
+    match /leads/{leadId} {
+      // Customer owns lead; open leads visible to signed-in providers; assigned lead visible to assigned provider
+      allow read: if isSignedIn() && (
+        isAdmin() ||
+        resource.data.customerId == request.auth.uid ||
+        resource.data.status == 'open' ||
+        (resource.data.status == 'assigned' && providerHasAssignmentForLead(leadId))
+      );
+      allow list: if isSignedIn() && (
+        isAdmin() ||
+        resource.data.customerId == request.auth.uid ||
+        resource.data.status == 'open' ||
+        (resource.data.status == 'assigned' && providerHasAssignmentForLead(leadId))
+      );
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (
+        isAdmin() ||
+        request.auth.uid == existing().customerId ||
+        (
+          providerHasAssignmentForLead(leadId) &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['status']) &&
+          existing().status == 'open' &&
+          incoming().status == 'assigned'
+        )
+      );
+      allow delete: if isAdmin();
+
+      match /assignments/{providerId} {
+        allow get: if isSignedIn() && (request.auth.uid == providerId || request.auth.uid == get(/databases/$(database)/documents/leads/$(leadId)).data.customerId || isAdmin());
+        allow list: if isSignedIn();
+        allow create, update: if isAdmin() || (isSignedIn() && request.auth.uid == providerId);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. Subscriptions
+    // -------------------------------------------------------------------------
+    match /subscriptions/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (
+        isSignedIn() &&
+        request.auth.uid == userId &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['leadsUsed'])
+      );
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. Reviews
+    // -------------------------------------------------------------------------
+    match /reviews/{reviewId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isSignedIn() && request.auth.uid == incoming().customerId;
+      allow update: if isSignedIn() && request.auth.uid == existing().customerId;
+      allow delete: if isAdmin();
+    }
+  }
+}
