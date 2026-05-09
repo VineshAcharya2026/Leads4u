@@ -19,6 +19,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLinkItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -34,11 +35,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
     await signOut(auth);
     navigate('/');
   };
-
-  /** Defer navigation so the menu popup can close (avoids blank / stuck UI with Base UI menu). */
-  const navigateAfterMenu = React.useCallback((to: string) => {
-    window.setTimeout(() => navigate(to), 0);
-  }, [navigate]);
 
   const dashboardPath = React.useMemo(
     () => (profile ? postAuthDestination(profile) : '/'),
@@ -92,27 +88,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => navigateAfterMenu(dashboardPath)}
+                    <DropdownMenuLinkItem
                       className="py-2.5 cursor-pointer"
+                      render={(props) => <Link {...props} to={dashboardPath} />}
                     >
                       <LayoutDashboard className="mr-3 h-4 w-4" />
                       <span>Dashboard</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => navigateAfterMenu(profileEditorPath(profile))}
+                    </DropdownMenuLinkItem>
+                    <DropdownMenuLinkItem
                       className="py-2.5 cursor-pointer"
+                      render={(props) => <Link {...props} to={profileEditorPath(profile)} />}
                     >
                       <User className="mr-3 h-4 w-4" />
                       <span>My Profile</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => navigateAfterMenu('/settings')}
+                    </DropdownMenuLinkItem>
+                    <DropdownMenuLinkItem
                       className="py-2.5 cursor-pointer"
+                      render={(props) => <Link {...props} to="/settings" />}
                     >
                       <Settings className="mr-3 h-4 w-4" />
                       <span>Account settings</span>
-                    </DropdownMenuItem>
+                    </DropdownMenuLinkItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="py-2.5 text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer">
                       <LogOut className="mr-3 h-4 w-4" />

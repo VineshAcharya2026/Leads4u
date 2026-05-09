@@ -37,8 +37,18 @@ function ProtectedRoute({
   const { user, profile, loading } = useAuth();
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  if (!user) return <Navigate to="/auth" />;
-  if (requiredRole && profile?.role !== requiredRole) return <Navigate to="/" />;
+  if (!user) return <Navigate to="/auth" replace />;
+  // Wait for Firestore profile before role-gating (null profile must not be treated as "wrong role").
+  if (requiredRole && !profile) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-2 px-4 text-center text-slate-600">
+        <p className="text-sm font-medium">Loading your account…</p>
+      </div>
+    );
+  }
+  if (requiredRole && profile.role !== requiredRole) {
+    return <Navigate to="/" replace />;
+  }
 
   return <>{children}</>;
 }
