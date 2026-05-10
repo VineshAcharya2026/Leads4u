@@ -29,7 +29,7 @@ export function HomeHero() {
   }, [reducedMotion]);
 
   return (
-    <section className="relative overflow-hidden border-b border-slate-200/70 bg-linear-to-br from-[#e8eef9] via-[#f8fafc] to-[#fff4ec] pb-16 pt-14 md:pb-22 md:pt-18 lg:pb-28 lg:pt-24">
+    <section className="relative overflow-hidden border-b border-slate-200/70 bg-linear-to-br from-[#e8eef9] via-[#f8fafc] to-[#fff4ec] pb-16 pt-14 md:pb-22 md:pt-20 lg:pb-28 lg:pt-24">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(26,60,110,0.12),transparent)]"

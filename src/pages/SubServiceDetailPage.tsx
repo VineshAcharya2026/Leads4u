@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { HomeServiceDetailView } from '@/components/services/HomeServiceDetailView';
+import { getHomeServiceDetail } from '@/src/content/home-service-details';
 import { CATEGORIES, getWhatsAppLink } from '../constants';
 
 export function SubServiceDetailPage() {
@@ -12,8 +14,44 @@ export function SubServiceDetailPage() {
   const serviceCategory = CATEGORIES.find((item) => item.slug === category);
   const subService = serviceCategory?.subcategories.find((item) => item.slug === subservice);
 
+  const homeDetail = useMemo(() => {
+    if (category !== 'home-services' || !subservice) return undefined;
+    return getHomeServiceDetail(subservice);
+  }, [category, subservice]);
+
+  useEffect(() => {
+    if (!subService || !category || !subservice || !serviceCategory) return;
+    document.title = homeDetail ? homeDetail.metaTitle : `${subService.name} | Leads4U`;
+
+    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'description');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute(
+      'content',
+      homeDetail ? homeDetail.metaDescription : `${subService.summary} Book on Leads4U — ${serviceCategory.name}.`,
+    );
+
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+    canonical.href = `${window.location.origin}/services/${category}/${subservice}`;
+    return () => {
+      document.title = 'Leads4u | Trusted Local Services';
+    };
+  }, [subService, category, subservice, serviceCategory, homeDetail]);
+
   if (!serviceCategory || !subService) {
     return <Navigate to="/" replace />;
+  }
+
+  if (homeDetail) {
+    return <HomeServiceDetailView serviceCategory={serviceCategory} subService={subService} config={homeDetail} />;
   }
 
   const goPrev = () => setImageIndex((prev) => (prev - 1 + subService.images.length) % subService.images.length);

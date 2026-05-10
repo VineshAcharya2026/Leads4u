@@ -17,6 +17,21 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 
+/** Safe for Firestore Timestamp, serialized maps, or missing fields — avoids crashing the sort comparator. */
+function leadCreatedAtMillis(lead: Lead): number {
+  const c = lead.createdAt;
+  if (c == null) return 0;
+  if (typeof c === 'object' && typeof (c as { toMillis?: () => number }).toMillis === 'function') {
+    return (c as { toMillis: () => number }).toMillis();
+  }
+  if (typeof c === 'object' && 'seconds' in c && typeof (c as { seconds: unknown }).seconds === 'number') {
+    const sec = (c as { seconds: number }).seconds;
+    const ns = typeof (c as { nanoseconds?: number }).nanoseconds === 'number' ? (c as { nanoseconds: number }).nanoseconds : 0;
+    return sec * 1000 + ns / 1e6;
+  }
+  return 0;
+}
+
 export function CustomerRequestsPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -30,7 +45,7 @@ export function CustomerRequestsPage() {
         const q = query(collection(db, 'leads'), where('customerId', '==', user.uid));
         const snapshot = await getDocs(q);
         const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Lead));
-        setLeads(data.sort((a, b) => b.createdAt?.toMillis() - a.createdAt?.toMillis()));
+        setLeads([...data].sort((a, b) => leadCreatedAtMillis(b) - leadCreatedAtMillis(a)));
       } catch (err) {
         console.error(err);
       } finally {

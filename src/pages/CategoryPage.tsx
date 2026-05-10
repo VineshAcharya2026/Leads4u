@@ -19,12 +19,15 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getWhatsAppLink } from '../constants';
+import { homeServiceSubVideoSrc } from '../content/service-videos';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 
 export function CategoryPage() {
   const { category } = useParams();
   const [providers, setProviders] = useState<ProviderProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const reducedMotion = usePrefersReducedMotion();
 
   const serviceCategory = CATEGORIES.find((c) => c.slug === category);
   const categoryInfo = CATEGORIES.flatMap(c => c.subcategories).find(sc => sc.slug === category);
@@ -72,13 +75,49 @@ export function CategoryPage() {
 
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {serviceCategory.subcategories.map((sub) => (
+            {serviceCategory.subcategories.map((sub) => {
+              const videoSrc =
+                serviceCategory.slug === 'home-services' ? homeServiceSubVideoSrc(sub.slug) : undefined;
+              const showVideo = Boolean(videoSrc) && !reducedMotion;
+
+              return (
               <Link
                 key={sub.slug}
                 to={`/services/${serviceCategory.slug}/${sub.slug}`}
                 className="group overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
               >
-                <img src={sub.images[0]} alt={sub.name} className="h-48 w-full object-cover transition duration-500 group-hover:scale-105" />
+                <div className="relative h-48 w-full overflow-hidden bg-slate-900">
+                  {showVideo ? (
+                    <>
+                      <video
+                        src={videoSrc}
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                        muted
+                        playsInline
+                        loop
+                        autoPlay
+                        preload="metadata"
+                        aria-label={`${sub.name} preview clip`}
+                      />
+                      <div
+                        className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-black/25"
+                        aria-hidden
+                      />
+                      <span
+                        className="pointer-events-none absolute right-3 top-3 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm"
+                        aria-hidden
+                      >
+                        Video
+                      </span>
+                    </>
+                  ) : (
+                    <img
+                      src={sub.images[0]}
+                      alt={sub.name}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  )}
+                </div>
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-[#1a3c6e]">{sub.name}</h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600">{sub.summary}</p>
@@ -88,7 +127,8 @@ export function CategoryPage() {
                   </div>
                 </div>
               </Link>
-            ))}
+            );
+            })}
           </div>
         </div>
       </div>

@@ -11,7 +11,11 @@ export function HomeServiceGrid() {
   const navigate = useNavigate();
 
   return (
-    <section data-home-reveal className="relative border-y border-slate-200/60 bg-linear-to-b from-white via-white to-[#f1f5f9]/40 py-20 md:py-28">
+    <section
+      id="services"
+      data-home-reveal
+      className="relative scroll-mt-24 border-y border-slate-200/60 bg-linear-to-b from-white via-white to-[#f1f5f9]/40 py-20 md:py-28"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Catalog"

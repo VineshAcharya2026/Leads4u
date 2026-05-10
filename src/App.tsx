@@ -16,6 +16,8 @@ import { CategoryPage } from './pages/CategoryPage';
 import { ProviderProfilePage } from './pages/ProviderProfilePage';
 import { SubServiceDetailPage } from './pages/SubServiceDetailPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { AboutPage } from './pages/AboutPage';
+import { ContactPage } from './pages/ContactPage';
 
 // Dashboards
 import { AdminDashboard } from './pages/dashboard/AdminDashboard';
@@ -62,6 +64,8 @@ export default function App() {
           <Layout>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/submit-lead" element={<LeadSubmissionPage />} />
               <Route path="/services/:category" element={<CategoryPage />} />

@@ -12,3 +12,20 @@ export const HOME_SERVICES_SLIDER_VIDEOS: readonly ServiceSliderVideo[] = [
   { src: '/sliders/pest.mp4', label: 'Pest control' },
   { src: '/sliders/waterproff.mp4', label: 'Waterproofing' },
 ];
+
+/** `/services/home-services` hub: one clip per sub-service slug (matches filenames in `public/sliders`). */
+export const HOME_SERVICE_SUB_VIDEO: Record<string, string> = {
+  plumbing: '/sliders/plumbing.mp4',
+  carpentry: '/sliders/carpenter.mp4',
+  painting: '/sliders/painting.mp4',
+  electrical: '/sliders/electric.mp4',
+  'ac-repair': '/sliders/AC.mp4',
+  'appliance-repair': '/sliders/appliasnce.mp4',
+  'home-cleaning': '/sliders/cleaning.mp4',
+  'pest-control': '/sliders/pest.mp4',
+  waterproofing: '/sliders/waterproff.mp4',
+};
+
+export function homeServiceSubVideoSrc(subSlug: string): string | undefined {
+  return HOME_SERVICE_SUB_VIDEO[subSlug];
+}
