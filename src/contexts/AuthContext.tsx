@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 import { completeGoogleRedirectIfAny } from '../lib/google-auth';
 import { ensureCustomerUserDocument } from '../lib/user-firestore';
+import { isMasterAdminEmail } from '../lib/master-admin';
 import { UserProfile } from '../types';
 
 interface AuthContextType {
@@ -24,6 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const promotedMasterRef = useRef(false);
 
   const refreshProfile = React.useCallback(async () => {
     const u = auth.currentUser;
@@ -76,6 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         } else {
           setProfile(null);
+          promotedMasterRef.current = false;
         }
         setLoading(false);
       });
@@ -86,6 +89,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       unsubscribe?.();
     };
   }, []);
+
+  /** Promotes vineshjm@gmail.com to admin once Rules allow masterEmailPromotion. */
+  useEffect(() => {
+    if (loading || !user?.uid || !user.email) return;
+    if (!isMasterAdminEmail(user.email)) return;
+    if (!profile || profile.role === 'admin') return;
+    if (promotedMasterRef.current) return;
+    promotedMasterRef.current = true;
+    void (async () => {
+      try {
+        await updateDoc(doc(db, 'users', user.uid), { role: 'admin' });
+        await refreshProfile();
+      } catch (err) {
+        promotedMasterRef.current = false;
+        if (import.meta.env.DEV) console.error('[auth] Master admin promotion failed:', err);
+      }
+    })();
+  }, [loading, user, profile, refreshProfile]);
+
+  useEffect(() => {
+    if (!user?.email || !isMasterAdminEmail(user.email)) promotedMasterRef.current = false;
+  }, [user?.email]);
 
   return (
     <AuthContext.Provider value={{ user, profile, loading, refreshProfile }}>

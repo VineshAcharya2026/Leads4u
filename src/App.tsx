@@ -20,7 +20,10 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 
 // Dashboards
-import { AdminDashboard } from './pages/dashboard/AdminDashboard';
+import { AdminLoginPage } from './pages/AdminLoginPage';
+import { AdminLayout } from './pages/dashboard/AdminLayout';
+import { AdminOverview } from './pages/dashboard/AdminOverview';
+import { AdminLeadsPage } from './pages/dashboard/AdminLeadsPage';
 import { ProviderDashboard } from './pages/dashboard/ProviderDashboard';
 import { ProviderCompanyProfilePage } from './pages/dashboard/ProviderCompanyProfilePage';
 import { CustomerDashboardLayout } from './pages/dashboard/CustomerDashboardLayout';
@@ -28,6 +31,7 @@ import { CustomerRequestsPage } from './pages/dashboard/CustomerRequestsPage';
 import { CustomerProfilePage } from './pages/dashboard/CustomerProfilePage';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import type { UserRole } from './types';
+import { isMasterAdminEmail } from './lib/master-admin';
 
 function ProtectedRoute({
   children,
@@ -47,6 +51,19 @@ function ProtectedRoute({
         <p className="text-sm font-medium">Loading your account…</p>
       </div>
     );
+  }
+  if (requiredRole === 'admin' && profile) {
+    const awaitingMasterPromotion =
+      !!user.email &&
+      isMasterAdminEmail(user.email) &&
+      profile.role !== 'admin';
+    if (awaitingMasterPromotion) {
+      return (
+        <div className="min-h-[50vh] flex flex-col items-center justify-center gap-2 px-4 text-center text-slate-600">
+          <p className="text-sm font-medium">Preparing master admin access…</p>
+        </div>
+      );
+    }
   }
   if (requiredRole && profile.role !== requiredRole) {
     return <Navigate to="/" replace />;
@@ -81,14 +98,19 @@ export default function App() {
                 }
               />
 
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+
               <Route
-                path="/admin/*"
+                path="/admin"
                 element={
                   <ProtectedRoute requiredRole="admin">
-                    <AdminDashboard />
+                    <AdminLayout />
                   </ProtectedRoute>
                 }
-              />
+              >
+                <Route index element={<AdminOverview />} />
+                <Route path="leads" element={<AdminLeadsPage />} />
+              </Route>
               <Route
                 path="/provider"
                 element={

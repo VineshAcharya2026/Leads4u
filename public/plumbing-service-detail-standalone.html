@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plumbing Services | Leads4U</title>
+  <meta name="description" content="Book trusted licensed plumbers on Leads4U. Emergency, repairs, installations & more. Upfront pricing, 12-month guarantee. Available 24/7." />
+  <link rel="canonical" href="https://leads4u-946ef.web.app/services/home-services/plumbing" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    :root {
+      --blue: #0D47A1;
+      --blue-mid: #1976D2;
+      --blue-light: #E3F2FD;
+      --accent: #FF6F00;
+      --accent-light: #FFF3E0;
+      --emergency: #B71C1C;
+      --emergency-bg: #FFEBEE;
+      --success: #2E7D32;
+      --text: #1a1a1a;
+      --muted: #666;
+      --border: rgba(0, 0, 0, 0.1);
+      --card: #ffffff;
+      --alt: #f8f9fa;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --radius-pill: 20px;
+      --section-pad: 2.5rem 1.5rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-weight: 400;
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.55;
+      background: var(--card);
+    }
+    h1, h2, h3, .font-serif {
+      font-family: "DM Serif Display", Georgia, serif;
+      font-weight: 400;
+    }
+    h1 { font-size: 2.5rem; line-height: 1.12; margin: 0 0 0.75rem; color: var(--blue); }
+    h2 { font-size: 1.7rem; line-height: 1.2; margin: 0 0 1rem; color: var(--blue); }
+    h3 { font-size: 1rem; font-weight: 600; margin: 0 0 0.35rem; color: var(--text); font-family: "DM Sans", sans-serif; }
+    p { margin: 0 0 0.75rem; color: var(--muted); }
+    a { color: inherit; text-decoration: none; }
+    .accent-line {
+      width: 40px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-bottom: 1rem;
+    }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: #fafafa;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 11px 24px;
+      border-radius: var(--radius-btn);
+      font-family: "DM Sans", sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover { background: #e65100; border-color: #e65100; }
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.85);
+    }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.1); }
+    .card {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.25rem;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: var(--section-pad);
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+      background: linear-gradient(165deg, var(--blue-light) 0%, #fff 45%, var(--accent-light) 100%);
+    }
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero::before {
+      width: 280px;
+      height: 280px;
+      background: rgba(13, 71, 161, 0.08);
+      top: -80px;
+      right: -60px;
+    }
+    .hero::after {
+      width: 180px;
+      height: 180px;
+      background: rgba(255, 111, 0, 0.12);
+      bottom: 10%;
+      left: -40px;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .hero h1 em {
+      font-family: "DM Serif Display", Georgia, serif;
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--text);
+      font-weight: 500;
+      max-width: 36rem;
+      margin-bottom: 2rem;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+    .stat {
+      background: rgba(255, 255, 255, 0.85);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1rem 1.25rem;
+      text-align: center;
+    }
+    .stat .ti { font-size: 22px; color: var(--blue-mid); display: block; margin-bottom: 0.35rem; }
+    .stat strong { display: block; font-size: 1.25rem; color: var(--blue); font-weight: 600; font-family: "DM Sans", sans-serif; }
+    .stat span { font-size: 0.8rem; color: var(--muted); }
+
+    /* EMERGENCY */
+    .emergency {
+      background: var(--emergency);
+      color: #fff;
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+    .emergency .ti { font-size: 22px; flex-shrink: 0; }
+    .emergency-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      flex: 1;
+      min-width: 200px;
+    }
+    .emergency strong { font-size: 1rem; font-weight: 600; display: block; margin-bottom: 0.25rem; }
+    .emergency small { opacity: 0.92; font-size: 0.85rem; line-height: 1.4; }
+    .emergency .btn-primary {
+      margin-left: auto;
+      background: #fff;
+      color: var(--emergency);
+      border-color: #fff;
+    }
+    .emergency .btn-primary:hover { background: var(--accent-light); color: var(--emergency); }
+
+    /* SECTIONS */
+    section.block { padding: var(--section-pad); }
+    .contain { max-width: 1100px; margin: 0 auto; }
+    .alt { background: var(--alt); }
+
+    /* CATEGORY GRID */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+    }
+    .cat-card {
+      background: var(--card);
+      padding: 1.25rem;
+    }
+    .cat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+    }
+    .cat-icon .ti { font-size: 22px; color: #fff; }
+    .cat-icon.a { background: var(--emergency); }
+    .cat-icon.b { background: var(--blue-mid); }
+    .cat-icon.c { background: #00838F; }
+    .cat-icon.d { background: #6A1B9A; }
+    .cat-icon.e { background: #37474F; }
+    .cat-icon.f { background: var(--success); }
+    .cat-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.75rem; }
+
+    /* CHECKLIST */
+    .info-box {
+      background: var(--blue-light);
+      border: 0.5px solid rgba(13, 71, 161, 0.15);
+      border-radius: var(--radius-card);
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+    .info-box .ti { color: var(--blue); font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .group-label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin: 1.5rem 0 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem 1.25rem;
+    }
+    .check-item {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 0.5rem 0.65rem;
+      align-items: start;
+    }
+    .check-item .ti { color: var(--success); font-size: 16px; margin-top: 2px; }
+    .check-item strong { font-size: 0.9rem; color: var(--text); font-weight: 600; }
+    .check-item span { grid-column: 2; font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+
+    /* SPLIT HOW + PRICING */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .steps { list-style: none; padding: 0; margin: 0; }
+    .steps li {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      align-items: start;
+    }
+    .step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "DM Sans", sans-serif;
+    }
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    .price-card {
+      position: relative;
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.25rem;
+    }
+    .price-card.featured {
+      border: 2px solid var(--blue-mid);
+      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.12);
+    }
+    .badge-booked {
+      position: absolute;
+      top: -10px;
+      right: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+    }
+    .price-card h3 { font-size: 0.95rem; color: var(--blue); margin-bottom: 0.5rem; }
+    .price { font-size: 1.35rem; font-weight: 600; color: var(--text); font-family: "DM Sans", sans-serif; }
+    .price-note { font-size: 0.8rem; color: var(--muted); margin-top: 1rem; }
+
+    /* TOOLS */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+    }
+    .tool {
+      text-align: center;
+      padding: 1rem 0.5rem;
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-card);
+    }
+    .tool .ti { font-size: 24px; color: var(--blue); display: block; margin-bottom: 0.5rem; }
+    .tool span { font-size: 0.8rem; font-weight: 500; color: var(--text); }
+
+    /* GUARANTEES */
+    .guar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1.25rem;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .guar .ti { font-size: 28px; color: var(--blue); margin-bottom: 0.5rem; }
+    .guar strong { display: block; font-size: 0.95rem; color: var(--text); margin-bottom: 0.35rem; font-family: "DM Sans", sans-serif; }
+    .guar p { font-size: 0.8rem; margin: 0; }
+
+    /* FAQ */
+    .faq-item {
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-card);
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+      background: var(--card);
+    }
+    .faq-q {
+      width: 100%;
+      text-align: left;
+      padding: 1rem 1.25rem;
+      background: transparent;
+      border: none;
+      font-family: "DM Sans", sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .faq-q .ti-chevron-down {
+      font-size: 18px;
+      color: var(--blue-mid);
+      transition: transform 0.25s ease;
+      flex-shrink: 0;
+    }
+    .faq-item.open .faq-q .ti-chevron-down { transform: rotate(180deg); }
+    .faq-a {
+      display: none;
+      padding: 0 1.25rem 1rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    /* CTA FOOTER */
+    .cta-footer {
+      background: var(--blue);
+      color: #fff;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+    .cta-footer h2 {
+      color: #fff;
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    .cta-footer .sub { color: rgba(255, 255, 255, 0.88); max-width: 32rem; margin: 0 auto 1.75rem; font-size: 1rem; }
+    .cta-btns { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-bottom: 1.25rem; }
+    .cta-footer .btn-primary { background: var(--accent); border-color: var(--accent); }
+    .cta-footer .btn-primary:hover { background: #e65100; }
+    .fine { font-size: 0.75rem; color: rgba(255, 255, 255, 0.7); margin: 0; }
+
+    @media (max-width: 520px) {
+      h1 { font-size: 1.85rem; }
+      h2 { font-size: 1.4rem; }
+      .stats { grid-template-columns: 1fr; }
+      .check-grid { grid-template-columns: 1fr; }
+      .split { grid-template-columns: 1fr; }
+      .price-grid { grid-template-columns: 1fr; }
+      .emergency { flex-direction: column; align-items: stretch; }
+      .emergency .btn-primary { margin-left: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="accent-line"></div>
+      <h1>Plumbing that shows up <em>on time</em>, fixed right</h1>
+      <p class="hero-sub">Burst pipes, hidden leaks, installs, and upgrades — matched to vetted local plumbers who quote upfront and stand behind the work.</p>
+      <div class="stats">
+        <div class="stat">
+          <i class="ti ti-hours-24" aria-hidden="true"></i>
+          <strong>24/7</strong>
+          <span>Emergency dispatch</span>
+        </div>
+        <div class="stat">
+          <i class="ti ti-star-filled" aria-hidden="true"></i>
+          <strong>4.9</strong>
+          <span>Avg. job rating</span>
+        </div>
+        <div class="stat">
+          <i class="ti ti-tool" aria-hidden="true"></i>
+          <strong>12k+</strong>
+          <span>Jobs completed</span>
+        </div>
+        <div class="stat">
+          <i class="ti ti-thumb-up" aria-hidden="true"></i>
+          <strong>98%</strong>
+          <span>Would book again</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- EMERGENCY -->
+  <div class="emergency" role="region" aria-label="Emergency plumbing">
+    <div class="emergency-inner">
+      <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+      <div>
+        <strong>Active leak or no water? Don’t wait.</strong>
+        <small>Leads4U routes urgent calls to on-call plumbers in your area — gas-safe where required, with live ETA updates.</small>
+      </div>
+    </div>
+    <a class="btn btn-primary" href="https://leads4u-946ef.web.app/services/home-services/plumbing">Get Help Now</a>
+  </div>
+
+  <!-- SERVICE CATEGORIES -->
+  <section class="block" aria-labelledby="cat-heading">
+    <div class="contain">
+      <div class="accent-line"></div>
+      <h2 id="cat-heading">What we cover under Plumbing</h2>
+      <p style="margin-bottom:1.5rem;">Pick the lane that matches your job — each card links to the same booking flow so you’re never bounced around.</p>
+      <div class="cat-grid">
+        <article class="cat-card">
+          <div class="cat-icon a"><i class="ti ti-flame" aria-hidden="true"></i></div>
+          <h3>Emergency Plumbing</h3>
+          <p>Bursts, shut-offs, and flooding — rapid response to limit damage and restore supply.</p>
+          <div class="cat-tags">
+            <span class="tag">Burst pipes</span>
+            <span class="tag">Main valve</span>
+            <span class="tag">After-hours</span>
+          </div>
+        </article>
+        <article class="cat-card">
+          <div class="cat-icon b"><i class="ti ti-droplet" aria-hidden="true"></i></div>
+          <h3>Drain Cleaning</h3>
+          <p>From slow sinks to main-line backups — camera-led diagnosis before we jet or snake.</p>
+          <div class="cat-tags">
+            <span class="tag">Kitchen sink</span>
+            <span class="tag">Floor drain</span>
+            <span class="tag">Sewer line</span>
+          </div>
+        </article>
+        <article class="cat-card">
+          <div class="cat-icon c"><i class="ti ti-bath" aria-hidden="true"></i></div>
+          <h3>Water Heater Services</h3>
+          <p>Repairs, anode checks, and full replacements for storage & instant systems.</p>
+          <div class="cat-tags">
+            <span class="tag">Heating element</span>
+            <span class="tag">Thermostat</span>
+            <span class="tag">Install</span>
+          </div>
+        </article>
+        <article class="cat-card">
+          <div class="cat-icon d"><i class="ti ti-droplet-half-2" aria-hidden="true"></i></div>
+          <h3>Bathroom Plumbing</h3>
+          <p>Fixtures, WC suites, mixers, and concealed cisterns fitted to manufacturer spec.</p>
+          <div class="cat-tags">
+            <span class="tag">WC install</span>
+            <span class="tag">Mixer repair</span>
+            <span class="tag">Siliconing</span>
+          </div>
+        </article>
+        <article class="cat-card">
+          <div class="cat-icon e"><i class="ti ti-pipe" aria-hidden="true"></i></div>
+          <h3>Pipe Repair &amp; Repiping</h3>
+          <p>Pinhole leaks, corroded GI, and partial or full home repipes with pressure testing.</p>
+          <div class="cat-tags">
+            <span class="tag">CPVC / PEX</span>
+            <span class="tag">Concealed</span>
+            <span class="tag">Chasing</span>
+          </div>
+        </article>
+        <article class="cat-card">
+          <div class="cat-icon f"><i class="ti ti-filter" aria-hidden="true"></i></div>
+          <h3>Water Quality &amp; Filtration</h3>
+          <p>RO, UV, softeners, and whole-house filters — plumbed in with proper drain &amp; bypass.</p>
+          <div class="cat-tags">
+            <span class="tag">RO service</span>
+            <span class="tag">Softener</span>
+            <span class="tag">UV lamp</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section class="block alt" aria-labelledby="check-heading">
+    <div class="contain">
+      <div class="accent-line"></div>
+      <h2 id="check-heading">Complete services checklist</h2>
+      <div class="info-box">
+        <i class="ti ti-shield-check" aria-hidden="true"></i>
+        <div>
+          <strong style="color:var(--blue);font-family:'DM Sans',sans-serif;">Warranty &amp; compliance</strong>
+          <p style="margin:0;font-size:0.9rem;">Work carried out by licensed partners where applicable; written warranty on parts &amp; labour as per your quote. GST invoices provided.</p>
+        </div>
+      </div>
+
+      <p class="group-label"><span aria-hidden="true">🔴</span> Repairs &amp; Emergency</p>
+      <div class="check-grid">
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Leak detection &amp; repair</strong><span>Acoustic &amp; thermal methods to find concealed drips before opening walls.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Overflow &amp; tank issues</strong><span>Ballcock, siphon, and inlet repairs for cisterns and overhead tanks.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Pressure problems</strong><span>PRV adjustment, airlock clearing, and pump-assisted supply checks.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Temporary make-safe</strong><span>Isolate, cap, or bypass so your home stays usable until full fix.</span></div>
+      </div>
+
+      <p class="group-label"><span aria-hidden="true">🔵</span> Installations &amp; Upgrades</p>
+      <div class="check-grid">
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Fixture upgrades</strong><span>Washbasins, showers, and kitchen sinks with proper traps &amp; vents.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Water heater install</strong><span>Wall-mounted or floor-standing — electrical tie-in coordinated.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Dishwasher / WM points</strong><span>Hot &amp; cold taps, standpipe, and non-return where code requires.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Outdoor bib taps</strong><span>Frost-safe garden points and irrigation take-offs.</span></div>
+      </div>
+
+      <p class="group-label"><span aria-hidden="true">🟢</span> Drainage &amp; Waste Systems</p>
+      <div class="check-grid">
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>High-pressure jetting</strong><span>Grease and scale removal in kitchen stacks and lateral lines.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Mechanical augering</strong><span>Closet auger &amp; sectional machines for traps and WC passages.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Gully &amp; chamber clean</strong><span>Remove silt, reset covers, and test fall after service.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>CCTV survey</strong><span>Recorded footage &amp; report for insurance or handover packs.</span></div>
+      </div>
+
+      <p class="group-label"><span aria-hidden="true">🟠</span> Pipe Work &amp; Supply Systems</p>
+      <div class="check-grid">
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Repiping projects</strong><span>Route planning, chasing, and commissioning with pressure log.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Valve replacements</strong><span>Gate, ball, and mixer cartridges — stock carried on van.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Copper / PEX / CPVC</strong><span>Material matched to your building age and water chemistry.</span></div>
+        <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i><strong>Pressure testing</strong><span>Hydrostatic hold &amp; documented sign-off before conceal.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW + PRICING -->
+  <section class="block" aria-labelledby="how-heading">
+    <div class="contain split">
+      <div>
+        <div class="accent-line"></div>
+        <h2 id="how-heading">How it works</h2>
+        <ol class="steps">
+          <li><span class="step-num">1</span><div><strong style="color:var(--text);">Book</strong><p style="margin:0.25rem 0 0;font-size:0.9rem;">Tell us the issue, photos optional — we slot urgency correctly.</p></div></li>
+          <li><span class="step-num">2</span><div><strong style="color:var(--text);">Match &amp; confirm</strong><p style="margin:0.25rem 0 0;font-size:0.9rem;">A verified plumber accepts with ETA; you get profile + reviews link.</p></div></li>
+          <li><span class="step-num">3</span><div><strong style="color:var(--text);">Upfront quote</strong><p style="margin:0.25rem 0 0;font-size:0.9rem;">₹-priced scope on site; no surprise “extras” without approval.</p></div></li>
+          <li><span class="step-num">4</span><div><strong style="color:var(--text);">Job done</strong><p style="margin:0.25rem 0 0;font-size:0.9rem;">Warranty note + GST bill; rate your visit so we keep standards high.</p></div></li>
+        </ol>
+      </div>
+      <div>
+        <div class="accent-line"></div>
+        <h2>Indicative pricing (NCR)</h2>
+        <p style="font-size:0.9rem;margin-bottom:1rem;">Ballpark figures for planning — final ₹ confirmed after inspection.</p>
+        <div class="price-grid">
+          <article class="price-card">
+            <h3>Call-out / inspection</h3>
+            <div class="price">₹499 – ₹899</div>
+            <p style="font-size:0.8rem;margin:0.5rem 0 0;">Waived or adjusted when you proceed with quoted work same visit.</p>
+          </article>
+          <article class="price-card featured">
+            <span class="badge-booked">Most booked</span>
+            <h3>Leaking tap / mixer service</h3>
+            <div class="price">₹349 – ₹1,299</div>
+            <p style="font-size:0.8rem;margin:0.5rem 0 0;">Cartridge, O-rings, or full replacement — parts extra if needed.</p>
+          </article>
+          <article class="price-card">
+            <h3>Drain unblocking</h3>
+            <div class="price">₹899 – ₹3,500</div>
+            <p style="font-size:0.8rem;margin:0.5rem 0 0;">Simple trap clear vs. main-line jetting — quoted before start.</p>
+          </article>
+          <article class="price-card">
+            <h3>WC full install</h3>
+            <div class="price">₹2,500 – ₹5,500</div>
+            <p style="font-size:0.8rem;margin:0.5rem 0 0;">Labour only; pan &amp; cistern supplied by you or sourced via partner.</p>
+          </article>
+          <article class="price-card">
+            <h3>Water heater install</h3>
+            <div class="price">₹1,800 – ₹4,200</div>
+            <p style="font-size:0.8rem;margin:0.5rem 0 0;">Wall brackets, PRV, drain line, and electrical coordination.</p>
+          </article>
+          <article class="price-card">
+            <h3>Emergency night rate</h3>
+            <div class="price">1.5× – 2×</div>
+            <p style="font-size:0.8rem;margin:0.5rem 0 0;">22:00–06:00 &amp; holidays — shown clearly in app before accept.</p>
+          </article>
+        </div>
+        <p class="price-note">All prices include GST. Final price confirmed on-site.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section class="block alt" aria-labelledby="tools-heading">
+    <div class="contain">
+      <div class="accent-line"></div>
+      <h2 id="tools-heading">Tools &amp; equipment we bring</h2>
+      <p style="margin-bottom:1.5rem;">Professional-grade kit — so diagnostics are fast and fixes last.</p>
+      <div class="tools-grid">
+        <div class="tool"><i class="ti ti-video" aria-hidden="true"></i><span>CCTV drain camera</span></div>
+        <div class="tool"><i class="ti ti-droplet" aria-hidden="true"></i><span>High-pressure water jetter</span></div>
+        <div class="tool"><i class="ti ti-radar" aria-hidden="true"></i><span>Pipe locator</span></div>
+        <div class="tool"><i class="ti ti-temperature" aria-hidden="true"></i><span>Thermal leak detector</span></div>
+        <div class="tool"><i class="ti ti-gauge" aria-hidden="true"></i><span>Pressure test gauge</span></div>
+        <div class="tool"><i class="ti ti-cut" aria-hidden="true"></i><span>Pipe cutter &amp; crimper</span></div>
+        <div class="tool"><i class="ti ti-tool" aria-hidden="true"></i><span>Drain auger / snake</span></div>
+        <div class="tool"><i class="ti ti-droplet-half-2" aria-hidden="true"></i><span>Moisture meter</span></div>
+        <div class="tool"><i class="ti ti-snowflake" aria-hidden="true"></i><span>Pipe freeze kit</span></div>
+        <div class="tool"><i class="ti ti-bolt" aria-hidden="true"></i><span>Electric drain cleaner</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUARANTEES -->
+  <section class="block" aria-labelledby="guar-heading">
+    <div class="contain">
+      <div class="accent-line" style="margin-left:auto;margin-right:auto;"></div>
+      <h2 id="guar-heading" style="text-align:center;">Our guarantees</h2>
+      <p style="text-align:center;max-width:36rem;margin:0 auto 2rem;">Leads4U backs every plumbing job booked through the platform with clear, written commitments.</p>
+      <div class="guar-grid">
+        <article class="guar">
+          <i class="ti ti-shield-check" aria-hidden="true"></i>
+          <strong>12-month warranty</strong>
+          <p>Labour &amp; nominated parts covered per your job sheet.</p>
+        </article>
+        <article class="guar">
+          <i class="ti ti-currency-rupee" aria-hidden="true"></i>
+          <strong>Fixed price quoted</strong>
+          <p>Scope locked before spanners turn — change orders signed off.</p>
+        </article>
+        <article class="guar">
+          <i class="ti ti-certificate" aria-hidden="true"></i>
+          <strong>Licensed &amp; insured</strong>
+          <p>Partners carry trade insurance &amp; valid credentials.</p>
+        </article>
+        <article class="guar">
+          <i class="ti ti-clock-hour-4" aria-hidden="true"></i>
+          <strong>On-time arrival</strong>
+          <p>Live tracking + SMS if traffic shifts the window.</p>
+        </article>
+        <article class="guar">
+          <i class="ti ti-thumb-up" aria-hidden="true"></i>
+          <strong>Satisfaction or free</strong>
+          <p>Report issues within 48h — we mediate rework fast.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="block alt" aria-labelledby="faq-heading">
+    <div class="contain">
+      <div class="accent-line"></div>
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <div class="faq-list" style="max-width:720px;margin-top:1.25rem;">
+        <div class="faq-item">
+          <button type="button" class="faq-q" aria-expanded="false">
+            How quickly can a plumber arrive in an emergency?
+            <i class="ti ti-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="faq-a">Metro slots typically 45–90 minutes for true emergencies (active leak / no water). Rural or peak-storm nights may run longer — you’ll see live ETA before you confirm.</div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q" aria-expanded="false">
+            Do I need to be home during the job?
+            <i class="ti ti-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="faq-a">Someone 18+ should be present for access, decisions on scope, and sign-off. For common repairs, a building supervisor pass is fine if you authorise it in the booking notes.</div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q" aria-expanded="false">
+            Will you supply the parts and materials?
+            <i class="ti ti-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="faq-a">Yes — vans carry standard cartridges, hoses, and fittings. Special finishes or imported WC frames may be ordered — timeline &amp; deposit quoted before order.</div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q" aria-expanded="false">
+            What payment methods do you accept?
+            <i class="ti ti-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="faq-a">UPI, cards, netbanking, and cash where legally allowed. GST invoice is emailed; milestone payments possible on larger repipes.</div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q" aria-expanded="false">
+            How do I know if I have a hidden leak?
+            <i class="ti ti-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="faq-a">Unexplained bill spikes, warm spots on walls, or mildew smell are red flags. We combine meter tests, acoustic listening, and thermal imaging before suggesting opening finishes.</div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-q" aria-expanded="false">
+            Is the work compliant with local building codes?
+            <i class="ti ti-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="faq-a">Installations follow NBC-relevant practices and manufacturer manuals. Where municipal inspection is required, we document pressure tests &amp; materials for your file.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FOOTER -->
+  <footer class="cta-footer">
+    <h2 class="font-serif">Ready to Book a Plumber?</h2>
+    <p class="sub">Join thousands of homeowners who trust Leads4U for hassle-free plumbing. Get a free quote in minutes.</p>
+    <div class="cta-btns">
+      <a class="btn btn-primary" href="https://leads4u-946ef.web.app/services/home-services/plumbing">Book a Plumber</a>
+      <a class="btn btn-outline" href="https://leads4u-946ef.web.app/services/home-services/plumbing">Get a Free Quote</a>
+    </div>
+    <p class="fine">No credit card · cancel anytime · all plumbers background-verified</p>
+  </footer>
+
+  <script>
+    (function () {
+      document.querySelectorAll(".faq-q").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var item = btn.closest(".faq-item");
+          var open = item.classList.toggle("open");
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -18,6 +18,7 @@ import {
   Info,
   LayoutGrid,
   Mail,
+  ListTodo,
 } from 'lucide-react';
 import { postAuthDestination, profileEditorPath } from '../lib/dashboard-paths';
 import { Button } from '@/components/ui/button';
@@ -166,18 +167,24 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 </Button>
 
                 <DropdownMenu open={profileMenuOpen} onOpenChange={setProfileMenuOpen}>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-slate-100 p-0 transition-colors hover:border-[#f97316] sm:h-11 sm:w-11"
-                    >
-                      <Avatar className="h-full w-full">
-                        <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'Account'} />
-                        <AvatarFallback className="bg-slate-100 text-[#1a3c6e]">{user.displayName?.charAt(0) || 'U'}</AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
+                  <DropdownMenuTrigger
+                    nativeButton={false}
+                    render={
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        aria-label="Open account menu"
+                        className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-slate-100 p-0 shadow-none transition-colors hover:border-[#f97316] sm:h-11 sm:w-11 [&_svg]:hidden"
+                      >
+                        <Avatar className="h-full w-full rounded-full border-0">
+                          <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'Account'} />
+                          <AvatarFallback className="bg-slate-100 text-[#1a3c6e]">
+                            {user.displayName?.charAt(0) || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                      </Button>
+                    }
+                  />
                   <DropdownMenuContent className="mt-2 w-56" align="end">
                     <DropdownMenuLabel className="px-4 py-3 font-semibold text-slate-900">
                       <div className="flex flex-col space-y-1">
@@ -194,8 +201,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
                       }}
                     >
                       <LayoutDashboard className="mr-3 h-4 w-4" />
-                      <span>Dashboard</span>
+                      <span>{profile?.role === 'admin' ? 'Admin overview' : 'Dashboard'}</span>
                     </DropdownMenuItem>
+                    {profile?.role === 'admin' ? (
+                      <DropdownMenuItem
+                        className="cursor-pointer py-2.5"
+                        onClick={() => {
+                          setProfileMenuOpen(false);
+                          navigate('/admin/leads');
+                        }}
+                      >
+                        <ListTodo className="mr-3 h-4 w-4" />
+                        <span>Lead queue</span>
+                      </DropdownMenuItem>
+                    ) : null}
                     <DropdownMenuItem
                       className="cursor-pointer py-2.5"
                       onClick={() => {
@@ -334,8 +353,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
                         className="block rounded-xl px-4 py-3 text-base font-bold text-slate-600 transition-colors duration-200 hover:bg-slate-50"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        Dashboard
+                        {profile?.role === 'admin' ? 'Admin overview' : 'Dashboard'}
                       </Link>
+                      {profile?.role === 'admin' ? (
+                        <Link
+                          to="/admin/leads"
+                          className="block rounded-xl px-4 py-3 text-base font-bold text-slate-600 transition-colors duration-200 hover:bg-slate-50"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          Lead queue
+                        </Link>
+                      ) : null}
                       <Link
                         to={profileEditorPath(profile)}
                         className="block rounded-xl px-4 py-3 text-base font-bold text-slate-600 transition-colors duration-200 hover:bg-slate-50"

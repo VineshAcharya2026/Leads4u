@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { formatFirestoreDate } from '../../lib/firestore-time';
 
 /** Safe for Firestore Timestamp, serialized maps, or missing fields — avoids crashing the sort comparator. */
 function leadCreatedAtMillis(lead: Lead): number {
@@ -94,7 +95,7 @@ export function CustomerRequestsPage() {
                             {lead.category.replace(/-/g, ' ')}
                           </Badge>
                           <div className="flex items-center text-xs text-slate-400 font-bold gap-1 uppercase tracking-tighter">
-                            <Clock className="h-3 w-3" /> {new Date(lead.createdAt?.toDate()).toLocaleDateString()}
+                            <Clock className="h-3 w-3" /> {formatFirestoreDate(lead.createdAt)}
                           </div>
                           <StatusBadge status={lead.status} />
                         </div>
@@ -126,6 +127,13 @@ export function CustomerRequestsPage() {
                             <Button className="w-full bg-[#1a3c6e] text-white rounded-xl h-10 text-xs font-bold">
                               View Quote
                             </Button>
+                          </div>
+                        ) : lead.status === 'pending_review' ? (
+                          <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 text-center">
+                            <p className="text-xs font-bold text-amber-900 mb-1">With operations</p>
+                            <p className="text-[10px] text-amber-800/90">
+                              Our team reviews your request and assigns the right professional.
+                            </p>
                           </div>
                         ) : lead.status === 'open' ? (
                           <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center">
@@ -174,13 +182,14 @@ export function CustomerRequestsPage() {
 
 function StatusBadge({ status }: { status: string }) {
   const configs: Record<string, { label: string; classes: string }> = {
+    pending_review: { label: 'Under review', classes: 'bg-amber-50 text-amber-800' },
     open: { label: 'Finding Pros', classes: 'bg-yellow-50 text-yellow-600' },
     assigned: { label: 'Matched', classes: 'bg-blue-50 text-blue-600' },
     completed: { label: 'Completed', classes: 'bg-green-50 text-green-600' },
     cancelled: { label: 'Cancelled', classes: 'bg-slate-50 text-slate-500' },
   };
 
-  const config = configs[status] || configs.open;
+  const config = configs[status] ?? { label: status, classes: 'bg-slate-100 text-slate-600' };
 
   return (
     <Badge className={`${config.classes} border-none font-bold`}>

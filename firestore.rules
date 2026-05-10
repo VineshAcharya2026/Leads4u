@@ -28,15 +28,26 @@ service cloud.firestore {
     // -------------------------------------------------------------------------
     // 1. Users Collection
     // -------------------------------------------------------------------------
+    function masterEmailPromotion(userId) {
+      return request.auth.token.email != null &&
+             request.auth.token.email.lower() == 'vineshjm@gmail.com' &&
+             request.auth.uid == userId &&
+             incoming().role == 'admin' &&
+             incoming().diff(existing()).affectedKeys().hasOnly(['role']);
+    }
+
     match /users/{userId} {
       allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
       allow list: if isAdmin();
       allow create: if isSignedIn() && request.auth.uid == userId &&
                       incoming().role in ['customer', 'provider'] &&
                       incoming().uid == userId;
-      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin()) &&
-                      (isAdmin() || incoming().diff(existing()).affectedKeys()
-                        .hasOnly(['displayName', 'photoURL', 'phoneNumber', 'customerAccountType', 'companyName', 'needsProfileSetup']));
+      allow update: if isSignedIn() && request.auth.uid == userId && (
+                       isAdmin() ||
+                       masterEmailPromotion(userId) ||
+                       incoming().diff(existing()).affectedKeys()
+                         .hasOnly(['displayName', 'photoURL', 'phoneNumber', 'customerAccountType', 'companyName', 'needsProfileSetup'])
+                     );
     }
 
     // -------------------------------------------------------------------------
@@ -58,9 +69,17 @@ service cloud.firestore {
         isAdmin() ||
         resource.data.providerId == request.auth.uid
       );
-      allow create: if isSignedIn() &&
-        incoming().providerId == request.auth.uid &&
-        incoming().leadId is string;
+      allow create: if isSignedIn() && (
+        (
+          isAdmin() &&
+          incoming().leadId is string &&
+          incoming().providerId is string
+        ) ||
+        (
+          incoming().providerId == request.auth.uid &&
+          incoming().leadId is string
+        )
+      );
       allow update, delete: if isSignedIn() && (
         isAdmin() ||
         resource.data.providerId == request.auth.uid

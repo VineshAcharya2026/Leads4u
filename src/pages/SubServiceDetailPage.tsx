@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { HomeServiceDetailView } from '@/components/services/HomeServiceDetailView';
 import { getHomeServiceDetail } from '@/src/content/home-service-details';
 import { CATEGORIES, getWhatsAppLink } from '../constants';
+import { cn } from '@/lib/utils';
 
 export function SubServiceDetailPage() {
   const { category, subservice } = useParams();
@@ -14,10 +15,10 @@ export function SubServiceDetailPage() {
   const serviceCategory = CATEGORIES.find((item) => item.slug === category);
   const subService = serviceCategory?.subcategories.find((item) => item.slug === subservice);
 
-  const homeDetail = useMemo(() => {
-    if (category !== 'home-services' || !subservice) return undefined;
-    return getHomeServiceDetail(subservice);
-  }, [category, subservice]);
+  const homeDetail =
+    category === 'home-services' && subservice
+      ? getHomeServiceDetail(subservice)
+      : undefined;
 
   useEffect(() => {
     if (!subService || !category || !subservice || !serviceCategory) return;
@@ -58,43 +59,96 @@ export function SubServiceDetailPage() {
   const goNext = () => setImageIndex((prev) => (prev + 1) % subService.images.length);
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <Link to={`/services/${serviceCategory.slug}`} className="inline-flex items-center text-sm font-medium text-[#1a3c6e] hover:underline">
-          Back to Services
-        </Link>
+    <div className="min-h-screen bg-slate-50 pb-16">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#1a3c6e] via-[#152e55] to-[#1a3c6e] pb-10 pt-8 text-white md:pb-14 md:pt-10">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-[#f97316]/15 blur-3xl"
+        />
+        <div className="relative z-[1] mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <Link
+            to={`/services/${serviceCategory.slug}`}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-white/90 transition hover:text-white"
+          >
+            <ChevronLeft className="h-4 w-4" aria-hidden />
+            Back to {serviceCategory.name}
+          </Link>
+          <Badge className="mt-6 border-0 bg-[#f97316] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-sm hover:bg-[#f97316]">
+            {serviceCategory.name}
+          </Badge>
+          <h1 className="mt-4 max-w-3xl font-['DM_Serif_Display',Georgia,serif] text-3xl font-normal tracking-tight md:text-4xl lg:text-[2.65rem]">
+            {subService.name}
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg font-medium leading-relaxed text-blue-100/95">{subService.summary}</p>
+        </div>
+      </section>
 
-        <div className="mt-5 overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm">
-          <div className="relative h-[340px] md:h-[460px]">
-            <img src={subService.images[imageIndex]} alt={subService.name} className="h-full w-full object-cover" />
-            {subService.images.length > 1 && (
+      <div className="relative z-[2] mx-auto -mt-6 max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-xl shadow-slate-900/10">
+          <div className="relative aspect-[16/10] max-h-[min(70vh,28rem)] bg-slate-900 md:max-h-[28rem]">
+            <img
+              src={subService.images[imageIndex]}
+              alt={subService.name}
+              className="h-full w-full object-cover"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
+            {subService.images.length > 1 ? (
               <>
-                <button type="button" onClick={goPrev} className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-700 shadow">
+                <button
+                  type="button"
+                  onClick={goPrev}
+                  className="absolute left-4 top-1/2 z-[2] -translate-y-1/2 rounded-full bg-white/95 p-2.5 text-[#1a3c6e] shadow-lg transition hover:bg-white"
+                  aria-label="Previous image"
+                >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
-                <button type="button" onClick={goNext} className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-700 shadow">
+                <button
+                  type="button"
+                  onClick={goNext}
+                  className="absolute right-4 top-1/2 z-[2] -translate-y-1/2 rounded-full bg-white/95 p-2.5 text-[#1a3c6e] shadow-lg transition hover:bg-white"
+                  aria-label="Next image"
+                >
                   <ChevronRight className="h-5 w-5" />
                 </button>
+                <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
+                  {subService.images.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      aria-label={`Show image ${i + 1}`}
+                      onClick={() => setImageIndex(i)}
+                      className={cn(
+                        'h-2 rounded-full transition-all',
+                        i === imageIndex ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80',
+                      )}
+                    />
+                  ))}
+                </div>
               </>
-            )}
+            ) : null}
           </div>
 
-          <div className="p-8">
-            <Badge className="mb-4 bg-[#1a3c6e]">{serviceCategory.name}</Badge>
-            <h1 className="text-3xl font-black text-slate-900 md:text-4xl">{subService.name}</h1>
-            <p className="mt-3 text-lg text-slate-600">{subService.summary}</p>
-            <p className="mt-5 leading-7 text-slate-700">{subService.description}</p>
+          <div className="p-8 md:p-10">
+            <p className="max-w-3xl text-base leading-relaxed text-slate-700">{subService.description}</p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href={getWhatsAppLink(`Hi, I need ${subService.name}. Please share details.`)} target="_blank" rel="noreferrer">
-                <Button className="w-full bg-green-600 text-white hover:bg-green-700 sm:w-auto">
-                  <MessageCircle className="mr-2 h-4 w-4" />
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <a
+                href={getWhatsAppLink(`Hi, I need ${subService.name}. Please share details.`)}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex sm:inline-flex"
+              >
+                <Button className="h-12 w-full rounded-2xl bg-emerald-600 px-8 text-base font-bold text-white shadow-md hover:bg-emerald-700 sm:w-auto">
+                  <MessageCircle className="mr-2 h-5 w-5" aria-hidden />
                   Chat on WhatsApp
                 </Button>
               </a>
-              <Link to="/submit-lead">
-                <Button variant="outline" className="w-full border-[#1a3c6e] text-[#1a3c6e] sm:w-auto">
-                  Request Service
+              <Link to="/submit-lead" className="inline-flex">
+                <Button
+                  variant="outline"
+                  className="h-12 w-full rounded-2xl border-2 border-[#1a3c6e] bg-transparent px-8 text-base font-bold text-[#1a3c6e] hover:bg-[#1a3c6e]/5 sm:w-auto"
+                >
+                  Post a request
                 </Button>
               </Link>
             </div>

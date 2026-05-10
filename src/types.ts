@@ -40,8 +40,12 @@ export interface Lead {
   pincode: string;
   budget: string;
   urgency: 'low' | 'medium' | 'high';
-  status: 'open' | 'assigned' | 'completed' | 'cancelled';
+  /** pending_review = waiting for master admin to route to a provider */
+  status: 'pending_review' | 'open' | 'assigned' | 'completed' | 'cancelled';
   createdAt: any;
+  /** When master routes the lead */
+  routedAt?: any;
+  routedProviderId?: string;
   customerName: string;
   customerPhone: string;
 }
@@ -49,9 +53,12 @@ export interface Lead {
 export interface LeadAssignment {
   leadId: string;
   providerId: string;
-  status: 'new' | 'accepted' | 'contacted' | 'converted' | 'rejected';
+  status: 'new' | 'accepted' | 'contacted' | 'converted' | 'rejected' | 'routed';
   assignedAt: any;
   notes?: string;
+  /** Set when ops routes from admin dashboard */
+  routingSource?: 'admin' | 'provider';
+  routedByUserId?: string;
 }
 
 export interface Subscription {

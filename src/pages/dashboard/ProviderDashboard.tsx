@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { collection, query, where, getDocs, doc, getDoc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { formatFirestoreDate } from '../../lib/firestore-time';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { Lead, LeadAssignment, Subscription } from '../../types';
@@ -22,7 +23,6 @@ import {
   User,
   LayoutDashboard,
   MessageSquare,
-  Search
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'motion/react';
@@ -67,15 +67,13 @@ export function ProviderDashboard() {
         });
         setAssignments(assignmentsData);
 
-        // Fetch Leads (either assigned or matching categories)
-        // Simplified: Fetch all active leads for now
-        const leadsQuery = query(collection(db, 'leads'), where('status', 'in', ['open', 'assigned']));
-        const leadsSnap = await getDocs(leadsQuery);
-        const leadsData = leadsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Lead));
-        
-        // Filter leads based on provider's categories (if they have profile)
+        const leadPromises = Object.keys(assignmentsData).map((leadId) => getDoc(doc(db, 'leads', leadId)));
+        const leadSnaps = await Promise.all(leadPromises);
+        const leadsData: Lead[] = leadSnaps
+          .filter((s) => s.exists())
+          .map((s) => ({ id: s.id, ...s.data() } as Lead));
+
         if (profile?.role === 'provider') {
-          // In real app, you'd filter by category and city here
           setLeads(leadsData);
         }
       } catch (err) {
@@ -87,43 +85,6 @@ export function ProviderDashboard() {
 
     fetchData();
   }, [user, profile]);
-
-  const handleAcceptLead = async (leadId: string) => {
-    if (!user || !subscription) {
-      toast.error('Active subscription required to accept leads');
-      return;
-    }
-
-    if (subscription.leadsUsed >= subscription.leadsLimit) {
-      toast.error('Monthly lead limit reached. Please upgrade your plan.');
-      return;
-    }
-
-    try {
-      // Create assignment
-      await setDoc(doc(db, 'leadsAssignments', `${leadId}_${user.uid}`), {
-        leadId,
-        providerId: user.uid,
-        status: 'accepted',
-        assignedAt: serverTimestamp()
-      });
-
-      // Update lead status
-      await updateDoc(doc(db, 'leads', leadId), {
-        status: 'assigned'
-      });
-
-      // Update subscription usage
-      await updateDoc(doc(db, 'subscriptions', user.uid), {
-        leadsUsed: (subscription.leadsUsed || 0) + 1
-      });
-
-      toast.success('Lead accepted! Customer contact details revealed.');
-      // Refresh logic here
-    } catch (err) {
-      toast.error('Failed to accept lead');
-    }
-  };
 
   const currentPlan = PLANS.find(p => p.id === subscription?.planId);
 
@@ -161,7 +122,7 @@ export function ProviderDashboard() {
           <div className="lg:col-span-2 space-y-8">
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <StatCard icon={Zap} title="New Leads" value={leads.length.toString()} color="blue" />
+              <StatCard icon={Zap} title="Routed leads" value={leads.length.toString()} color="blue" />
               <StatCard icon={CheckCircle2} title="Converted" value="12" color="green" />
               <StatCard icon={TrendingUp} title="Revenue" value="₹45k" color="orange" />
               <StatCard icon={Award} title="Rating" value="4.9" color="purple" />
@@ -181,18 +142,13 @@ export function ProviderDashboard() {
               </div>
 
               <TabsContent value="available" className="mt-0 space-y-4">
-                {leads.length > 0 ? (
-                  leads.map((lead) => (
-                    <LeadCard 
-                      key={lead.id} 
-                      lead={lead} 
-                      onAccept={() => handleAcceptLead(lead.id)}
-                      isAssigned={!!assignments[lead.id]}
-                    />
-                  ))
-                ) : (
-                  <EmptyState title="No leads available" message="Try expanding your categories or checking back later." />
-                )}
+                <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+                  <p className="font-bold text-slate-900">Leads are assigned by operations</p>
+                  <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+                    New customer requests go to the master admin first. When you are matched, the lead appears under My
+                    Active Leads with full contact details.
+                  </p>
+                </div>
               </TabsContent>
 
               <TabsContent value="active" className="mt-0 space-y-4">
@@ -310,7 +266,7 @@ const LeadCard: React.FC<{ lead: Lead, assignment?: LeadAssignment, onAccept?: (
               {lead.category.replace(/-/g, ' ')}
             </Badge>
             <div className="flex items-center text-xs text-slate-400 font-bold gap-1 uppercase tracking-tighter">
-              <Clock className="h-3 w-3" /> {new Date(lead.createdAt?.toDate()).toLocaleDateString()}
+              <Clock className="h-3 w-3" /> {formatFirestoreDate(lead.createdAt)}
             </div>
             {lead.urgency === 'high' && (
               <Badge className="bg-red-50 text-red-600 border-none font-bold">Urgent</Badge>
@@ -384,14 +340,3 @@ function HealthItem({ label, value, status }: { label: string, value: string, st
   );
 }
 
-function EmptyState({ title, message }: { title: string, message: string }) {
-  return (
-    <div className="bg-white rounded-3xl p-12 text-center border-2 border-dashed border-slate-200">
-      <div className="bg-slate-50 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
-        <Search className="h-8 w-8 text-slate-300" />
-      </div>
-      <h4 className="font-bold text-slate-900 mb-1">{title}</h4>
-      <p className="text-sm text-slate-500">{message}</p>
-    </div>
-  );
-}

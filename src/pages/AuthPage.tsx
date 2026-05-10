@@ -15,7 +15,7 @@ import { CATEGORIES } from '../constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { Mail, Lock, User, Briefcase, MapPin } from 'lucide-react';
-import { postAuthDestination } from '../lib/dashboard-paths';
+import { rememberPostLoginPathFromSearchParam, resolvePostLoginPath } from '../lib/dashboard-paths';
 import type { CustomerAccountType, UserProfile } from '../types';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { ensureGsapScrollTrigger, gsap } from '../lib/gsap-register';
@@ -114,11 +114,13 @@ export function AuthPage() {
         toast.success('Welcome back!');
         const snap = await getDoc(doc(db, 'users', cred.user.uid));
         const p = snap.exists() ? (snap.data() as UserProfile) : ({ role: 'customer' as const, needsProfileSetup: true } satisfies Pick<UserProfile, 'role' | 'needsProfileSetup'>);
-        navigate(postAuthDestination(p));
+        navigate(resolvePostLoginPath(p, cred.user.email ?? undefined));
         return;
       }
       if (mode === 'register') {
-        navigate(postAuthDestination({ role, needsProfileSetup: true }));
+        navigate(
+          resolvePostLoginPath({ role, needsProfileSetup: true }, auth.currentUser?.email ?? undefined),
+        );
         return;
       }
       navigate('/');
@@ -138,7 +140,7 @@ export function AuthPage() {
         ? (snap.data() as UserProfile)
         : ({ role: 'customer' as const, needsProfileSetup: true } satisfies Pick<UserProfile, 'role' | 'needsProfileSetup'>);
       toast.success('Signed in with Google');
-      navigate(postAuthDestination(p));
+      navigate(resolvePostLoginPath(p, u.email ?? undefined));
     } catch (error: unknown) {
       if (error instanceof RedirectPendingError) {
         toast.info('Continuing with Google…', {

@@ -54,7 +54,8 @@ export function LeadSubmissionPage() {
       await addDoc(collection(db, 'leads'), {
         ...formData,
         customerId: user.uid,
-        status: 'open',
+        /** Operations team reviews and routes from admin dashboard before providers see it. */
+        status: 'pending_review',
         createdAt: serverTimestamp(),
       });
       setStep(4);
