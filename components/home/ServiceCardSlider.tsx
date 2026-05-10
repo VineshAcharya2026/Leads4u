@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { usePrefersReducedMotion } from '@/src/hooks/usePrefersReducedMotion';
 import type { ServiceSliderVideo } from '@/src/content/service-videos';
 
@@ -12,9 +13,11 @@ type ServiceCardSliderProps = {
   alt: string;
   /** When set (and user does not prefer reduced motion), show autoplaying muted video slides. */
   videos?: readonly ServiceSliderVideo[];
+  /** Override default height (e.g. hero strip: `h-56 md:h-80`). */
+  className?: string;
 };
 
-export function ServiceCardSlider({ images, alt, videos }: ServiceCardSliderProps) {
+export function ServiceCardSlider({ images, alt, videos, className }: ServiceCardSliderProps) {
   const [active, setActive] = useState(0);
   const reducedMotion = usePrefersReducedMotion();
   const useVideos = Boolean(videos?.length) && !reducedMotion;
@@ -40,7 +43,7 @@ export function ServiceCardSlider({ images, alt, videos }: ServiceCardSliderProp
   const transition = reducedMotion ? { duration: 0 } : { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const };
 
   return (
-    <div className="relative h-[13.5rem] overflow-hidden md:h-[14rem]">
+    <div className={cn('relative h-[13.5rem] overflow-hidden md:h-[14rem]', className)}>
       <div className="absolute inset-0 z-[1] bg-linear-to-t from-black/55 via-transparent to-black/30" aria-hidden />
 
       {useVideos ? (

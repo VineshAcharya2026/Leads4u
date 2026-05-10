@@ -4,6 +4,7 @@ import { HomeCategoryShowcase } from '@/components/home/HomeCategoryShowcase';
 import { HomeHero } from '@/components/home/HomeHero';
 import { HomeHowItWorks } from '@/components/home/HomeHowItWorks';
 import { HomeProviderCta } from '@/components/home/HomeProviderCta';
+import { HomeServicesVideoSection } from '@/components/home/HomeServicesVideoSection';
 import { HomeServiceGrid } from '@/components/home/HomeServiceGrid';
 import { useAuth } from '../contexts/AuthContext';
 import { postAuthDestination } from '../lib/dashboard-paths';
@@ -49,6 +50,7 @@ export function HomePage() {
   return (
     <div ref={homeRootRef} className="flex flex-col">
       <HomeHero />
+      <HomeServicesVideoSection />
       <HomeCategoryShowcase />
       <HomeServiceGrid />
       <HomeHowItWorks />
