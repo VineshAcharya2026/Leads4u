@@ -1,4 +1,5 @@
 import React from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../lib/firebase';
@@ -44,21 +45,31 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       {/* Navbar */}
-      <header className="h-20 bg-white border-b border-slate-200 sticky top-0 z-50">
+      <header className="sticky top-0 z-50 h-20 border-b border-slate-200/90 bg-white/90 shadow-sm shadow-slate-900/5 backdrop-blur-md transition-[background,box-shadow] duration-300 supports-[backdrop-filter]:bg-white/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
           <div className="flex items-center gap-10">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-[#1a3c6e] rounded-xl flex items-center justify-center">
-                <div className="w-4 h-4 bg-[#f97316] rounded-full shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div>
+            <Link to="/" className="group flex items-center gap-2 transition-transform duration-200 hover:scale-[1.02]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1a3c6e] shadow-md shadow-[#1a3c6e]/25 transition-shadow duration-300 group-hover:shadow-lg">
+                <div className="h-4 w-4 rounded-full bg-[#f97316] shadow-[0_0_10px_rgba(249,115,22,0.5)] transition-transform duration-300 group-hover:scale-110" />
               </div>
               <span className="text-2xl font-bold tracking-tight text-[#1a3c6e]">Leads4u</span>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-500">
-              <Link to="/" className="hover:text-[#1a3c6e] transition-colors">Find Services</Link>
-              <Link to="/submit-lead" className="hover:text-[#1a3c6e] transition-colors">Post a Request</Link>
+            <nav className="hidden items-center gap-8 text-sm font-semibold text-slate-500 md:flex">
+              <Link
+                to="/"
+                className="relative py-1 text-slate-600 transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-[#f97316] after:transition-transform after:duration-300 hover:text-[#1a3c6e] hover:after:scale-x-100"
+              >
+                Find Services
+              </Link>
+              <Link
+                to="/submit-lead"
+                className="relative py-1 text-slate-600 transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-[#f97316] after:transition-transform after:duration-300 hover:text-[#1a3c6e] hover:after:scale-x-100"
+              >
+                Post a Request
+              </Link>
             </nav>
           </div>
 
@@ -141,28 +152,62 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-slate-100 pb-6 px-4">
-            <div className="pt-4 space-y-2">
-              <Link to="/" className="block px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-slate-50">Find Services</Link>
-              <Link to="/submit-lead" className="block px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-slate-50">Post a Request</Link>
-              {user ? (
-                <>
-                  <Link to={dashboardPath} className="block px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-slate-50">Dashboard</Link>
-                  <Link to={profileEditorPath(profile)} className="block px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-slate-50">My Profile</Link>
-                  <Link to="/settings" className="block px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-slate-50">Account settings</Link>
-                  <button onClick={handleLogout} className="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-red-500 hover:bg-red-50">Log out</button>
-                </>
-              ) : (
-                <>
-                  <Link to="/auth?mode=login" className="block px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-slate-50">Login</Link>
-                  <Link to="/auth?mode=register" className="block px-4 py-3 rounded-xl text-base font-bold text-[#f97316] hover:bg-orange-50">Join as Provider</Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
+        <AnimatePresence initial={false}>
+          {isMobileMenuOpen ? (
+            <motion.div
+              key="mobile-nav"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden border-t border-slate-100 bg-white/95 backdrop-blur-sm md:hidden"
+            >
+              <motion.div
+                initial={{ y: -8, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -6, opacity: 0 }}
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                className="space-y-1 px-4 pb-6 pt-4"
+              >
+                <Link to="/" className="block rounded-xl px-4 py-3 text-base font-bold text-slate-600 transition-colors duration-200 hover:bg-slate-50">
+                  Find Services
+                </Link>
+                <Link to="/submit-lead" className="block rounded-xl px-4 py-3 text-base font-bold text-slate-600 transition-colors duration-200 hover:bg-slate-50">
+                  Post a Request
+                </Link>
+                {user ? (
+                  <>
+                    <Link to={dashboardPath} className="block rounded-xl px-4 py-3 text-base font-bold text-slate-600 transition-colors duration-200 hover:bg-slate-50">
+                      Dashboard
+                    </Link>
+                    <Link to={profileEditorPath(profile)} className="block rounded-xl px-4 py-3 text-base font-bold text-slate-600 transition-colors duration-200 hover:bg-slate-50">
+                      My Profile
+                    </Link>
+                    <Link to="/settings" className="block rounded-xl px-4 py-3 text-base font-bold text-slate-600 transition-colors duration-200 hover:bg-slate-50">
+                      Account settings
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="block w-full rounded-xl px-4 py-3 text-left text-base font-bold text-red-500 transition-colors duration-200 hover:bg-red-50"
+                    >
+                      Log out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/auth?mode=login" className="block rounded-xl px-4 py-3 text-base font-bold text-slate-600 transition-colors duration-200 hover:bg-slate-50">
+                      Login
+                    </Link>
+                    <Link to="/auth?mode=register" className="block rounded-xl px-4 py-3 text-base font-bold text-[#f97316] transition-colors duration-200 hover:bg-orange-50">
+                      Join as Provider
+                    </Link>
+                  </>
+                )}
+              </motion.div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </header>
 
       {/* Main Content */}

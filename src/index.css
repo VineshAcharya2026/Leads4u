@@ -5,6 +5,25 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-blob {
+    animation: none !important;
+  }
+  .animation-delay-2000,
+  .animation-delay-4000 {
+    animation-delay: 0s !important;
+  }
+}
+
 @layer base {
   :root {
     --background: oklch(0.98 0.01 220); /* #f8fafc-ish */

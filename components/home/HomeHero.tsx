@@ -1,4 +1,7 @@
+import { useLayoutEffect, useRef } from 'react';
 import { motion } from 'motion/react';
+import { usePrefersReducedMotion } from '@/src/hooks/usePrefersReducedMotion';
+import { gsap } from '@/src/lib/gsap-register';
 import { ArrowRight, MapPin, ShieldCheck, Timer } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,6 +9,24 @@ import { getWhatsAppLink } from '@/src/constants';
 
 export function HomeHero() {
   const navigate = useNavigate();
+  const bentoRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = usePrefersReducedMotion();
+
+  useLayoutEffect(() => {
+    if (reducedMotion || !bentoRef.current) return;
+    const cells = bentoRef.current.querySelectorAll('.bento-cell');
+    if (!cells.length) return;
+    gsap.from(cells, {
+      opacity: 0,
+      y: 22,
+      scale: 0.98,
+      duration: 0.55,
+      stagger: 0.09,
+      ease: 'power3.out',
+      delay: 0.12,
+      clearProps: 'transform',
+    });
+  }, [reducedMotion]);
 
   return (
     <section className="relative overflow-hidden border-b border-slate-200/70 bg-linear-to-br from-[#e8eef9] via-[#f8fafc] to-[#fff4ec] pb-16 pt-14 md:pb-22 md:pt-18 lg:pb-28 lg:pt-24">
@@ -126,18 +147,18 @@ export function HomeHero() {
             <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full border border-dashed border-slate-300/60 opacity-70" aria-hidden />
             <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full bg-[#f97316]/10 blur-2xl" aria-hidden />
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl bg-linear-to-br from-[#1a3c6e] to-[#274d8f] p-5 text-white shadow-inner">
+            <div ref={bentoRef} className="grid gap-4 sm:grid-cols-2">
+              <div className="bento-cell rounded-2xl bg-linear-to-br from-[#1a3c6e] to-[#274d8f] p-5 text-white shadow-inner transition-transform duration-300 hover:scale-[1.02]">
                 <p className="text-xs font-semibold uppercase tracking-widest text-white/75">Popular right now</p>
                 <p className="mt-3 text-2xl font-bold leading-tight">7 categories</p>
                 <p className="mt-2 text-sm text-white/85">Explore home, logistics, pets, and more.</p>
               </div>
-              <div className="flex flex-col justify-center rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-sm">
+              <div className="bento-cell flex flex-col justify-center rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-sm transition-transform duration-300 hover:scale-[1.02]">
                 <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Avg. vibe</p>
                 <p className="mt-3 text-xl font-bold text-[#0f2847]">Clear & calm</p>
                 <p className="mt-2 text-sm leading-snug text-slate-600">Simple paths to WhatsApp help or deeper service pages.</p>
               </div>
-              <div className="rounded-2xl border border-emerald-200/70 bg-linear-to-br from-emerald-50/90 to-teal-50/50 p-5 sm:col-span-2">
+              <div className="bento-cell rounded-2xl border border-emerald-200/70 bg-linear-to-br from-emerald-50/90 to-teal-50/50 p-5 transition-transform duration-300 hover:scale-[1.01] sm:col-span-2">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-widest text-emerald-800/80">For customers</p>

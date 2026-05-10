@@ -7,9 +7,9 @@ export function HomeProviderCta() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative pb-24 pt-16 md:pb-28 md:pt-20">
+    <section data-home-reveal className="relative pb-24 pt-16 md:pb-28 md:pt-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-[2rem] border border-orange-400/35 bg-linear-to-br from-[#182a52] via-[#1a3c6e] to-[#0f2847] p-9 text-white shadow-[0_32px_64px_-32px_rgba(15,40,71,0.85)] md:p-14 lg:flex lg:min-h-[22rem] lg:items-center lg:justify-between lg:gap-12 lg:p-16">
+        <div className="relative overflow-hidden rounded-[2rem] border border-orange-400/35 bg-linear-to-br from-[#182a52] via-[#1a3c6e] to-[#0f2847] p-9 text-white shadow-[0_32px_64px_-32px_rgba(15,40,71,0.85)] transition-shadow duration-500 hover:shadow-[0_40px_72px_-28px_rgba(15,40,71,0.95)] md:p-14 lg:flex lg:min-h-[22rem] lg:items-center lg:justify-between lg:gap-12 lg:p-16">
           <div
             aria-hidden
             className="pointer-events-none absolute -left-24 top-0 h-[320px] w-[320px] rounded-full bg-[#f97316]/25 blur-3xl"

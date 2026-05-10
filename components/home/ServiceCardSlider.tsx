@@ -1,59 +1,131 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { usePrefersReducedMotion } from '@/src/hooks/usePrefersReducedMotion';
+import type { ServiceSliderVideo } from '@/src/content/service-videos';
 
-export function ServiceCardSlider({ images, alt }: { images: string[]; alt: string }) {
-  const [activeImage, setActiveImage] = useState(0);
+const IMAGE_INTERVAL_MS = 3000;
+const VIDEO_INTERVAL_MS = 6500;
+
+type ServiceCardSliderProps = {
+  images: string[];
+  alt: string;
+  /** When set (and user does not prefer reduced motion), show autoplaying muted video slides. */
+  videos?: readonly ServiceSliderVideo[];
+};
+
+export function ServiceCardSlider({ images, alt, videos }: ServiceCardSliderProps) {
+  const [active, setActive] = useState(0);
+  const reducedMotion = usePrefersReducedMotion();
+  const useVideos = Boolean(videos?.length) && !reducedMotion;
+
+  const count = useVideos ? videos!.length : images.length;
+  const intervalMs = useVideos ? VIDEO_INTERVAL_MS : IMAGE_INTERVAL_MS;
+
+  const go = useCallback(
+    (delta: number) => {
+      setActive((prev) => (prev + delta + count) % count);
+    },
+    [count],
+  );
 
   useEffect(() => {
-    if (images.length <= 1) return;
-
+    if (count <= 1) return;
     const timer = setInterval(() => {
-      setActiveImage((prev) => (prev + 1) % images.length);
-    }, 3000);
-
+      setActive((prev) => (prev + 1) % count);
+    }, intervalMs);
     return () => clearInterval(timer);
-  }, [images]);
+  }, [count, intervalMs]);
+
+  const transition = reducedMotion ? { duration: 0 } : { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const };
 
   return (
     <div className="relative h-[13.5rem] overflow-hidden md:h-[14rem]">
       <div className="absolute inset-0 z-[1] bg-linear-to-t from-black/55 via-transparent to-black/30" aria-hidden />
-      <img
-        src={images[activeImage]}
-        alt={alt}
-        className="h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
-      {images.length > 1 && (
+
+      {useVideos ? (
+        <AnimatePresence initial={false} mode="sync">
+          <motion.div
+            key={active}
+            className="absolute inset-0 z-0"
+            initial={reducedMotion ? false : { opacity: 0, scale: 1.03 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reducedMotion ? undefined : { opacity: 0, scale: 0.99 }}
+            transition={transition}
+          >
+            <video
+              className="h-full w-full object-cover"
+              src={videos![active].src}
+              muted
+              playsInline
+              loop
+              autoPlay
+              preload="metadata"
+              aria-label={`${alt}: ${videos![active].label}`}
+            />
+          </motion.div>
+        </AnimatePresence>
+      ) : (
+        <AnimatePresence initial={false} mode="sync">
+          <motion.img
+            key={active}
+            src={images[active]}
+            alt={alt}
+            className="absolute inset-0 z-0 h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+            initial={reducedMotion ? false : { opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reducedMotion ? undefined : { opacity: 0, scale: 0.98 }}
+            transition={transition}
+          />
+        </AnimatePresence>
+      )}
+
+      {useVideos ? (
+        <div
+          className="pointer-events-none absolute right-3 top-3 z-[2] rounded-full bg-black/45 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm"
+          aria-hidden
+        >
+          Video
+        </div>
+      ) : null}
+
+      {count > 1 ? (
         <>
           <button
             type="button"
-            onClick={() => setActiveImage((prev) => (prev - 1 + images.length) % images.length)}
-            className="absolute left-3 top-1/2 z-[2] -translate-y-1/2 rounded-full border border-white/25 bg-white/90 p-1.5 text-[#1a3c6e] shadow-md backdrop-blur-sm transition hover:bg-white"
-            aria-label="Previous image"
+            onClick={() => go(-1)}
+            className="absolute left-3 top-1/2 z-[2] -translate-y-1/2 rounded-full border border-white/25 bg-white/90 p-1.5 text-[#1a3c6e] shadow-md backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white active:scale-95"
+            aria-label={useVideos ? 'Previous video' : 'Previous image'}
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
           <button
             type="button"
-            onClick={() => setActiveImage((prev) => (prev + 1) % images.length)}
-            className="absolute right-3 top-1/2 z-[2] -translate-y-1/2 rounded-full border border-white/25 bg-white/90 p-1.5 text-[#1a3c6e] shadow-md backdrop-blur-sm transition hover:bg-white"
-            aria-label="Next image"
+            onClick={() => go(1)}
+            className="absolute right-3 top-1/2 z-[2] -translate-y-1/2 rounded-full border border-white/25 bg-white/90 p-1.5 text-[#1a3c6e] shadow-md backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white active:scale-95"
+            aria-label={useVideos ? 'Next video' : 'Next image'}
           >
             <ChevronRight className="h-4 w-4" />
           </button>
         </>
-      )}
-      <div className="absolute bottom-3 left-1/2 z-[2] flex -translate-x-1/2 gap-1">
-        {images.map((_, idx) => (
+      ) : null}
+
+      <div className="absolute bottom-3 left-1/2 z-[2] flex max-w-[calc(100%-2rem)] -translate-x-1/2 flex-wrap justify-center gap-1">
+        {Array.from({ length: count }, (_, idx) => (
           <button
             key={idx}
             type="button"
-            onClick={() => setActiveImage(idx)}
-            className={`h-1.5 rounded-full transition-all ${
-              idx === activeImage ? 'w-7 bg-white shadow-sm' : 'w-2 bg-white/55 hover:bg-white/75'
+            onClick={() => setActive(idx)}
+            className={`h-1.5 shrink-0 rounded-full transition-all duration-300 ease-out ${
+              idx === active ? 'w-7 bg-white shadow-sm' : 'w-2 bg-white/55 hover:bg-white/75'
             }`}
-            aria-label={`Slide ${idx + 1}`}
+            aria-label={
+              useVideos && videos![idx]
+                ? `${videos![idx].label} — slide ${idx + 1} of ${count}`
+                : `Slide ${idx + 1} of ${count}`
+            }
           />
         ))}
       </div>

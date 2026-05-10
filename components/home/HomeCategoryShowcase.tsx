@@ -31,7 +31,7 @@ export function HomeCategoryShowcase() {
   }, [isSliderPaused]);
 
   return (
-    <section className="relative bg-slate-50/80 py-14 md:py-20">
+    <section data-home-reveal className="relative bg-slate-50/80 py-14 md:py-20">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-linear-to-b from-white to-transparent" aria-hidden />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

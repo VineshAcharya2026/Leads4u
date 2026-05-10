@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createUserWithEmailAndPassword, deleteUser, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -17,6 +17,8 @@ import { toast } from 'sonner';
 import { Mail, Lock, User, Briefcase, MapPin } from 'lucide-react';
 import { postAuthDestination } from '../lib/dashboard-paths';
 import type { CustomerAccountType, UserProfile } from '../types';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { ensureGsapScrollTrigger, gsap } from '../lib/gsap-register';
 
 export function AuthPage() {
   const [searchParams] = useSearchParams();
@@ -35,6 +37,20 @@ export function AuthPage() {
   const [city, setCity] = useState('');
   const [customerAccountType, setCustomerAccountType] = useState<CustomerAccountType>('individual');
   const [companyName, setCompanyName] = useState('');
+  const authShellRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = usePrefersReducedMotion();
+
+  useLayoutEffect(() => {
+    if (reducedMotion || !authShellRef.current) return;
+    ensureGsapScrollTrigger();
+    const root = authShellRef.current;
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.from('[data-auth-tabs]', { opacity: 0, y: -14, duration: 0.42 })
+        .from(`[data-auth-card="${initialMode}"]`, { opacity: 0, y: 28, duration: 0.55 }, '-=0.22');
+    }, root);
+    return () => ctx.revert();
+  }, [reducedMotion, initialMode]);
 
   const handleAuth = async (e: React.FormEvent, mode: 'login' | 'register') => {
     e.preventDefault();
@@ -137,26 +153,33 @@ export function AuthPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-slate-50 p-4">
-      <div className="w-full max-w-md">
+    <div className="relative flex min-h-[calc(100vh-64px)] items-center justify-center overflow-hidden bg-slate-50 p-4">
+      <div aria-hidden className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-[#1a3c6e]/15 blur-3xl animate-blob" />
+      <div aria-hidden className="pointer-events-none absolute -right-20 bottom-1/4 h-80 w-80 rounded-full bg-[#f97316]/20 blur-3xl animate-blob animation-delay-2000" />
+      <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-200/20 blur-3xl animate-blob animation-delay-4000" />
+
+      <div ref={authShellRef} className="relative z-10 w-full max-w-md">
         <Tabs key={initialMode} defaultValue={initialMode} className="w-full">
-          <TabsList className="mb-8 grid h-12 w-full grid-cols-2 rounded-xl border border-slate-200 bg-white p-1">
+          <TabsList
+            data-auth-tabs
+            className="mb-8 grid h-12 w-full grid-cols-2 rounded-xl border border-slate-200/90 bg-white/95 p-1 shadow-sm backdrop-blur-sm transition-shadow duration-300 hover:shadow-md"
+          >
             <TabsTrigger
               value="login"
-              className="rounded-lg transition-all data-[state=active]:bg-[#1a3c6e] data-[state=active]:text-white"
+              className="rounded-lg transition-all duration-200 data-[state=active]:bg-[#1a3c6e] data-[state=active]:text-white data-[state=active]:shadow-md"
             >
               Login
             </TabsTrigger>
             <TabsTrigger
               value="register"
-              className="rounded-lg transition-all data-[state=active]:bg-[#1a3c6e] data-[state=active]:text-white"
+              className="rounded-lg transition-all duration-200 data-[state=active]:bg-[#1a3c6e] data-[state=active]:text-white data-[state=active]:shadow-md"
             >
               Register
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="login">
-            <Card className="overflow-hidden rounded-3xl border-none shadow-xl">
+            <Card data-auth-card="login" className="overflow-hidden rounded-3xl border border-slate-200/60 bg-white/95 shadow-xl shadow-slate-900/10 backdrop-blur-sm transition-shadow duration-300 hover:shadow-2xl">
               <CardHeader className="space-y-1 pb-6">
                 <CardTitle className="text-center text-2xl font-bold">Welcome back</CardTitle>
                 <CardDescription className="text-center italic">
@@ -230,7 +253,7 @@ export function AuthPage() {
           </TabsContent>
 
           <TabsContent value="register">
-            <Card className="overflow-hidden rounded-3xl border-none shadow-xl">
+            <Card data-auth-card="register" className="overflow-hidden rounded-3xl border border-slate-200/60 bg-white/95 shadow-xl shadow-slate-900/10 backdrop-blur-sm transition-shadow duration-300 hover:shadow-2xl">
               <CardHeader className="space-y-1 pb-4">
                 <CardTitle className="text-center text-2xl font-bold">Create account</CardTitle>
                 <CardDescription className="text-center">

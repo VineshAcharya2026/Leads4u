@@ -3,7 +3,7 @@ import { SectionHeader } from './SectionHeader';
 
 export function HomeHowItWorks() {
   return (
-    <section id="how-it-works" className="relative overflow-hidden bg-[#0f2847] py-24 text-white md:py-28">
+    <section data-home-reveal id="how-it-works" className="relative overflow-hidden bg-[#0f2847] py-24 text-white md:py-28">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_60%_at_50%_0%,rgba(249,115,22,0.18),transparent_55%)]"
@@ -27,7 +27,7 @@ export function HomeHowItWorks() {
           {HOW_IT_WORKS_STEPS.map((step, idx) => (
             <div key={step.step} className="relative flex flex-col">
               <div className="mb-6 flex md:justify-center">
-                <span className="inline-flex h-12 min-w-[3rem] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 text-xs font-bold tracking-[0.2em] backdrop-blur-sm">
+                <span className="inline-flex h-12 min-w-[3rem] items-center justify-center rounded-2xl border border-white/25 bg-white/12 px-4 text-xs font-bold tracking-[0.2em] shadow-sm backdrop-blur-sm transition-transform duration-300 hover:scale-105">
                   {step.step}
                 </span>
                 {idx < HOW_IT_WORKS_STEPS.length - 1 ? (
@@ -37,12 +37,12 @@ export function HomeHowItWorks() {
                   />
                 ) : null}
               </div>
-              <div className="overflow-hidden rounded-2xl ring-2 ring-white/15">
+              <div className="overflow-hidden rounded-2xl ring-2 ring-white/20 shadow-lg shadow-black/20 transition-shadow duration-300 hover:ring-white/35 hover:shadow-xl">
                 <div className="aspect-[16/11] overflow-hidden bg-slate-900/40">
                   <img
                     src={step.image}
                     alt={step.title}
-                    className="h-full w-full object-cover opacity-95"
+                    className="h-full w-full object-cover opacity-95 transition-transform duration-500 ease-out hover:scale-[1.03]"
                     loading="lazy"
                     decoding="async"
                   />
