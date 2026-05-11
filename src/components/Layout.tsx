@@ -118,13 +118,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex min-w-0 shrink-0 items-center">
             <Link
               to="/"
-              className="group flex items-center gap-2 transition-transform duration-200 hover:scale-[1.02]"
+              className="group flex min-w-0 items-center transition-transform duration-200 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a3c6e]/30 focus-visible:ring-offset-2 rounded-lg"
               onClick={() => setIsMobileMenuOpen(false)}
+              aria-label="Leads4U home"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1a3c6e] shadow-md shadow-[#1a3c6e]/25 transition-shadow duration-300 group-hover:shadow-lg">
-                <div className="h-4 w-4 rounded-full bg-[#f97316] shadow-[0_0_10px_rgba(249,115,22,0.5)] transition-transform duration-300 group-hover:scale-110" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-[#1a3c6e] sm:text-2xl">Leads4u</span>
+              <img
+                src="/leads4u-logo.svg"
+                alt="Leads4U"
+                width={220}
+                height={48}
+                className="h-9 w-auto max-h-10 max-w-[min(200px,calc(100vw-8rem))] object-left object-contain sm:h-10"
+                decoding="async"
+              />
             </Link>
           </div>
 
@@ -420,8 +425,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             <div>
-              <div className="mb-6 flex items-center space-x-2 text-white">
-                <PlusCircle className="h-6 w-6 text-[#f97316]" />
+              <div className="mb-6 flex items-center gap-2 text-white">
+                <img src="/leads4u-mark.svg" alt="" width={36} height={36} className="h-9 w-9 rounded-lg" decoding="async" />
                 <span className="text-xl font-bold tracking-tight">Leads4u</span>
               </div>
               <p className="text-sm">Leads4u is the trusted platform for connecting service seekers with verified professionals.</p>

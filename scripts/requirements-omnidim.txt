@@ -1,0 +1,5 @@
+# Optional: provision Omnidimension voice agents (Lexi) from the CLI.
+#   pip install -r scripts/requirements-omnidim.txt
+#   set OMNIDIM_API_KEY=...   (Windows) or export OMNIDIM_API_KEY=...
+#   python scripts/omnidimension_create_lexi_agent.py
+omnidimension>=0.2.17,<0.3

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+  <title>Leads4U</title>
+  <rect x="2" y="2" width="44" height="44" rx="12" fill="#1a3c6e"/>
+  <rect x="14" y="14" width="7" height="22" rx="1" fill="white" fill-opacity="0.96"/>
+  <rect x="14" y="29" width="22" height="7" rx="1" fill="white" fill-opacity="0.96"/>
+  <circle cx="36" cy="18" r="5" fill="#f97316"/>
+  <circle cx="36" cy="18" r="2" fill="white" fill-opacity="0.4"/>
+</svg>
